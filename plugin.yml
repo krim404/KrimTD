@@ -1,0 +1,13 @@
+name: KrimTD
+main: de.bdh.krimtd.Main
+version: 1.0
+authors: [wmchris]
+depend: [Vault]
+permissions:
+    td.admin:
+        description: admin
+        default: op
+commands:
+    td:
+         description: td Befehl
+         usage: /td PARAM
