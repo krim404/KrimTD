@@ -10,6 +10,7 @@ public class TDMob
 {
 	public int level;
 	public int hp;
+	public int slowed;
 	Location target;
 	LivingEntity e;
 	Main m;
@@ -47,10 +48,17 @@ public class TDMob
 		return 1;
 	}
 	
-	public static float getSpeed(LivingEntity e)
+	public float getSpeed()
 	{
 		//TODO Speedbestimmung nach Typ
-		return 0.3f;
+		float spd = 0.3f;
+		
+		if(slowed == 1)
+		{
+			slowed = 0;
+			return spd / 2;
+		} else
+			return spd;
 	}
 	
 	public void doDamage(int dmg)

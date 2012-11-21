@@ -177,7 +177,7 @@ public class Main extends JavaPlugin
 				    						 m = this.mob.get(e);
 				    					
 				    					m.target = to;
-				    					this.moveMob(e, to, TDMob.getSpeed(e));
+				    					this.moveMob(e, to, m.getSpeed());
 				    				}
 				    				//Keine weiteren vorhanden. Kill
 				    				else if(debug == true)

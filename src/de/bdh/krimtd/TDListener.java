@@ -3,6 +3,7 @@ package de.bdh.krimtd;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,6 +13,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -160,20 +162,50 @@ public class TDListener implements Listener
 	}
 	
 	@EventHandler
+	public void onHit(ProjectileHitEvent event)
+    {
+		if(event.getEntity() == null)
+			return;
+		
+		if(this.m.shots.get(event.getEntity()) != null)
+		{
+			//Gefeuert von einem Tower (Schnee, Rocket)
+		}
+    }
+	
+	@EventHandler
+	public void onAssault(EntityDamageByEntityEvent event)
+    {
+		if(event.getDamager() instanceof Arrow)
+		{
+			if(this.m.shots.get(event.getDamager()) != null)
+			{
+				//Gefeuert von einem Tower (Arrow)
+			}
+		}
+    }
+	
+	@EventHandler
 	public void onPlayerPickupItem(PlayerPickupItemEvent event) 
 	{
 		if(event.getItem().getItemStack().getType() == Material.GOLD_NUGGET)
 		{
+			event.getItem().remove();
+			event.setCancelled(true);
 			//TODO: Gib spieler Geld
 		}
 		
 		if(event.getItem().getItemStack().getType() == Material.GOLD_INGOT)
 		{
+			event.getItem().remove();
+			event.setCancelled(true);
 			//TODO: Gib spieler Geld
 		}
 		
 		if(event.getItem().getItemStack().getType() == Material.GOLD_BLOCK)
 		{
+			event.getItem().remove();
+			event.setCancelled(true);
 			//TODO: Gib spieler Geld
 		}
 	}

@@ -197,19 +197,15 @@ public class TDTower
 	
 	public void doAEDamage(LivingEntity e)
 	{
-		//Registrierter Mob
-		if(this.m.mob.get(e) != null)
+		//In Range?
+		if(e.getLocation().distance(this.b.getLocation()) < (1 + this.Level * 1.2))
 		{
-			//In Range?
-			if(e.getLocation().distance(this.b.getLocation()) < (1 + this.Level * 1.2))
-			{
-				//TODO: Balanciere Damage
-				this.m.mob.get(e).doDamage(10 * this.Level);
-				List<Location> smokeLocations = new ArrayList<Location>();
-                smokeLocations.add(e.getLocation());
-                smokeLocations.add(e.getLocation().clone().add(0.0D, 1.0D, 0.0D));
-                SmokeUtil.spawnCloudRandom(smokeLocations,(float)0.5);
-			}
+			//TODO: Balanciere Damage
+			this.m.mob.get(e).doDamage(10 * this.Level);
+			List<Location> smokeLocations = new ArrayList<Location>();
+            smokeLocations.add(e.getLocation());
+            smokeLocations.add(e.getLocation().clone().add(0.0D, 1.0D, 0.0D));
+            SmokeUtil.spawnCloudRandom(smokeLocations,(float)0.5);
 		}
 	}
 	
@@ -222,7 +218,7 @@ public class TDTower
 	public void tick()
 	{
 		++ticker;
-		if(ticker > 10)
+		if(ticker > (55 - 10*Level))
 		{
 			ticker = 0;
 			
@@ -232,32 +228,36 @@ public class TDTower
 			List<LivingEntity> ent = this.b.getWorld().getLivingEntities();
 			for (LivingEntity e: ent)
 	    	{
-				if(e.getLocation().distance(this.b.getLocation()) < 10)
+				//Registrierter Mob
+				if(this.m.mob.get(e) != null)
 				{
-					c = null;
-					if(this.getType() == 1)
+					if(e.getLocation().distance(this.b.getLocation()) < 10)
 					{
-						c = this.fireSnowBall(e.getLocation());
+						c = null;
+						if(this.getType() == 1)
+						{
+							c = this.fireSnowBall(e.getLocation());
+						}
+						else if(this.getType() == 2)
+						{
+							c = this.fireArrow(e.getLocation(),true);
+						}
+						else if(this.getType() == 4)
+						{
+							c = this.fireCharge(e.getLocation());
+						}
+						else if(this.getType() == 0)
+						{
+							c = this.fireArrow(e.getLocation(),false);
+						} 
+						else if(this.getType() == 3)
+						{
+							this.doAEDamage(e);
+						}
+						
+						if(c != null)
+							this.m.shots.put(c, this);
 					}
-					else if(this.getType() == 2)
-					{
-						c = this.fireArrow(e.getLocation(),true);
-					}
-					else if(this.getType() == 4)
-					{
-						c = this.fireCharge(e.getLocation());
-					}
-					else if(this.getType() == 0)
-					{
-						c = this.fireArrow(e.getLocation(),false);
-					} 
-					else if(this.getType() == 3)
-					{
-						this.doAEDamage(e);
-					}
-					
-					if(c != null)
-						this.m.shots.put(c, this);
 				}
 	    	}
 		} 
