@@ -201,7 +201,7 @@ public class TDTower
 		if(this.m.mob.get(e) != null)
 		{
 			//In Range?
-			if(e.getLocation().distance(this.b.getLocation()) < (4 + this.Level * 1.5))
+			if(e.getLocation().distance(this.b.getLocation()) < (1 + this.Level * 1.2))
 			{
 				//TODO: Balanciere Damage
 				this.m.mob.get(e).doDamage(10 * this.Level);
