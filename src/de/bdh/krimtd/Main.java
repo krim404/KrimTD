@@ -12,9 +12,11 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.entity.CraftCreature;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -109,29 +111,49 @@ public class Main extends JavaPlugin
 			    			s = getSpongeBelow(e.getLocation(),4);
 			    			if(s != null)
 			    			{
-			    				to = this.findNextPoint(e.getLocation());
-			    				if(to != null)
+			    				Block sign = getBlockAround(s,Material.SIGN_POST);
+			    				if(sign != null)
 			    				{
-			    					this.eTo.put(e, to);
-			    					this.moveMob(e, to, 0.4f);
-			    				}
-			    				else if(debug == true)
-			    				{
-			    					System.out.println("Cannot find next Point. Killing");
+			    					if(debug == true)
+			    						System.out.println("Found FINISH");
+			    					
+			    					//Ziel gefunden
+			    					int count = 0;
+			    					count = this.lives(s, Integer.parseInt(this.readSign(sign,2)), 1);
+			    					--count;
+			    					
+			    					String name = this.readSign(sign,1);
+			    					if(count == 0)
+			    					{
+			    						this.sendall("The TEAM "+name+" has lost the game!");
+			    						//Verloren
+			    					} else if(count > 0)
+			    					{
+			    						this.sendall("The TEAM "+name+" has "+count+" lives left");
+			    						//Leben abziehen
+			    					}
 			    					this.killMob(e);
+			    					
+			    				} else
+			    				{
+				    				//Goto next Point
+				    				to = this.findNextPoint(e.getLocation());
+				    				if(to != null)
+				    				{
+				    					this.eTo.put(e, to);
+				    					this.moveMob(e, to, 0.4f);
+				    				}
+				    				//Keine weiteren vorhanden. Kill
+				    				else if(debug == true)
+				    				{
+				    					System.out.println("Cannot find next Point. Killing");
+				    					this.killMob(e);
+				    				}
 			    				}
 			    			} else
 			    			{
-			    				s = getSpongeBelow(e.getLocation(),10);
-			    				if(s == null)
-			    				{
-			    					//Killing Mobs out of Range
-				    				this.killMob(e);
-			    				} else
-			    				{
-			    					if(debug == true)
-				    					System.out.println("Mob too far away from starting point");
-			    				}
+		    					//Killing Mobs out of Range
+			    				this.killMob(e);
 			    			}
 	    				}
 	    				this.ll.put(e,e.getLocation());
@@ -233,14 +255,70 @@ public class Main extends JavaPlugin
     	return null;
     }
     
-    public Block getGold(Block b)
+    public int lives(Block b,int typeid, int rem)
+    {
+    	int rad = 5;
+    	int am = 0;
+    	Block t;
+    	for(int i$ = (rad * -1); i$ < rad; i$++)
+        {
+        	for(int j$ = (rad * -1); j$ < rad; j$++)
+            {
+        		for(int k$ = (rad * -1); k$ < rad; k$++)
+                {
+        			t = b.getRelative(i$, j$, k$);
+        			if(t.getTypeId() == typeid)
+        			{
+        				if(rem > 0)
+        				{
+        					t.setType(Material.AIR);
+        					--rem;
+        				}
+        				++am;
+        			}
+                }
+            }
+        }
+    	return am;
+    }
+    
+    public String readSign(Block b,int line)
+    {
+    	String s = "";
+    	--line;
+    	if(b.getType() == Material.SIGN || b.getType() == Material.SIGN_POST)
+    	{
+    		if(b.getState() instanceof Sign)
+    		{
+    			Sign sign = (Sign)b.getState();
+    			s = sign.getLine(line);
+    		}
+    	}
+    	return s;
+    }
+    
+    public void sendall(String msg)
+    {
+    	for (Player p: Bukkit.getServer().getOnlinePlayers()) 
+    	{
+    		p.sendMessage(msg);
+    	}
+    }
+    
+    public Block getBlockAround(Block b,Material m)
     {
     	for (BlockFace f: faces)
     	{
-    		if(b.getRelative(f) != null && b.getRelative(f).getType() == Material.GOLD_BLOCK)
+    		if(b.getRelative(f) != null && b.getRelative(f).getType() == m)
     			return b.getRelative(f);
     	}
     	return null;
+    	
+    }
+    
+    public Block getGold(Block b)
+    {
+    	return getBlockAround(b,Material.GOLD_BLOCK);
     }
     
     public static PluginDescriptionFile pdf;
