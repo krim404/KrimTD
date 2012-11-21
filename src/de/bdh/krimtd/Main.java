@@ -1,10 +1,10 @@
 package de.bdh.krimtd;
 
+import java.util.HashMap;
 import java.util.List;
 
 import net.milkbowl.vault.economy.Economy;
 import net.minecraft.server.EntityCreature;
-import net.minecraft.server.PathEntity;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -20,10 +20,13 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
+
 public class Main extends JavaPlugin
 {
 	public Economy econ = null;
 	public TDListener TDListener = null;
+	public boolean debug = true;
+
 	
 	public BlockFace faces[] = 
 	{
@@ -66,11 +69,21 @@ public class Main extends JavaPlugin
         
     }
     
+    public void killMob(LivingEntity e)
+    {
+    	this.eTo.remove(e);
+    	this.ll.remove(e);
+    	e.setHealth(0);
+    }
+    
+    HashMap<LivingEntity, Location> eTo = new HashMap<LivingEntity,Location>();
+    HashMap<LivingEntity, Location> ll = new HashMap<LivingEntity,Location>();
     public void Tick()
     {
     	List<World> wlds = Bukkit.getWorlds();
     	Block s = null;
     	Location to = null;
+    	Boolean rego = false;
     	for (World w: wlds)
     	{
     		List<LivingEntity> ent = w.getLivingEntities();
@@ -80,30 +93,82 @@ public class Main extends JavaPlugin
     			{
 	    			if(!e.isDead())
 	    			{
-		    			s = getSpongeBelow(e.getLocation());
-		    			if(s != null)
-		    			{
-		    				to = this.findNextPoint(e.getLocation());
-		    				this.moveMob((Creature)e, to, 3.0f);
-		    			}
+	    				rego = false;
+    					if(this.ll.get(e) == null)
+    					{
+    						rego = true;
+    					} else if(this.ll.get(e).distance(e.getLocation()) < 1)
+    					{
+    						if(debug == true)
+		    					System.out.println("Mob not moving. Reregister");
+    						rego = true;
+    					}
+    					
+	    				if(this.eTo.get(e) == null || rego == true || (this.eTo.get(e) != null && e.getLocation().distance(this.eTo.get(e)) < 2.0))
+	    				{
+			    			s = getSpongeBelow(e.getLocation(),4);
+			    			if(s != null)
+			    			{
+			    				to = this.findNextPoint(e.getLocation());
+			    				if(to != null)
+			    				{
+			    					this.eTo.put(e, to);
+			    					this.moveMob(e, to, 0.4f);
+			    				}
+			    				else if(debug == true)
+			    				{
+			    					System.out.println("Cannot find next Point. Killing");
+			    					this.killMob(e);
+			    				}
+			    			} else
+			    			{
+			    				s = getSpongeBelow(e.getLocation(),10);
+			    				if(s == null)
+			    				{
+			    					//Killing Mobs out of Range
+				    				this.killMob(e);
+			    				} else
+			    				{
+			    					if(debug == true)
+				    					System.out.println("Mob too far away from starting point");
+			    				}
+			    			}
+	    				}
+	    				this.ll.put(e,e.getLocation());
 	    			}
     			}
         	}
     	}
     }
     
-    public void moveMob(Creature mob, Location to, float speed)
+    public void stopMob(LivingEntity mob)
     {
-	  	EntityCreature Mob = ((CraftCreature)mob).getHandle();
-	  	PathEntity path = Mob.world.a(Mob, to.getBlockX(), to.getBlockY(), to.getBlockZ(), 100.0F, true, false, false, true);
-	  	Mob.setPathEntity(path);
-	  	Mob.getNavigation().a(path, speed);
+    	EntityCreature notchMob = ((CraftCreature)mob).getHandle();
+    	notchMob.getNavigation().g();
+    	
+    	if(debug == true)
+    	{
+    		System.out.println("Mob has command to stop moving");	
+    	}
+    	
     }
     
-    public Block getSpongeBelow(Location l)
+    public void moveMob(LivingEntity mob, Location to,float speed)
+    {
+    	
+    	EntityCreature notchMob = ((CraftCreature)mob).getHandle();
+        notchMob.getNavigation().a(to.getX(), to.getY(), to.getZ(), speed);
+    	notchMob.getNavigation().d(true);
+    	
+    	if(debug == true)
+    	{
+    		System.out.println("Mob has command to move on");	
+    	}
+    }
+    
+    public Block getSpongeBelow(Location l,int rad)
     {
     	Block b = l.getBlock();
-    	int rad = 2;
     	Block temp = null;
     	for(int i$ = (rad * -1); i$ < rad; i$++)
         {
@@ -114,6 +179,8 @@ public class Main extends JavaPlugin
         			temp = b.getRelative(i$, j$, k$);
                     if(temp != null && temp.getType() == Material.SPONGE)
                     {
+                    	if(debug == true)
+                    		System.out.println("Found Sponge below for Loc '"+l.getX()+","+l.getY()+","+l.getZ()+"':"+temp.getX()+","+temp.getY()+","+temp.getZ());
                     	return temp;
                     }
                 }
@@ -126,11 +193,11 @@ public class Main extends JavaPlugin
     public Location findNextPoint(Location l)
     {
     	int rad = 10;
-    	int len = 6;
-    	int minlen = 2;
+    	int len = 8;
+    	int minlen = 1;
     	double dist = 0, dist2 = 0;
     	Block temp = null;
-    	Block b = l.getBlock();
+    	Block b = l.getWorld().getHighestBlockAt(l);
         for(int i$ = (rad * -1); i$ < rad; i$++)
         {
         	for(int j$ = (rad * -1); j$ < rad; j$++)
@@ -147,11 +214,16 @@ public class Main extends JavaPlugin
 	                    	dist2 = g.getWorld().getHighestBlockAt(g.getLocation()).getLocation().distance(b.getLocation());
 	                    	if(dist < len && dist > minlen && dist2 >= dist)
 	                    	{
+	                    		Location to = temp.getWorld().getHighestBlockAt(temp.getLocation()).getLocation();
+	                    		if(debug == true)
+	                    		{
+		                    		System.out.println("Found Next Point:"+to.getX()+","+to.getY()+","+to.getZ());
+	                    			System.out.println("Distanz:"+dist+",Gold:"+dist2);
+	                    		}
 	                    		//FOUND
-	                    		return b.getWorld().getHighestBlockAt(b.getLocation()).getRelative(BlockFace.UP).getLocation();
+	                    		return to;
 	                    	}
                     	}
-                    	g = null;
                 	}
                 }
             }
@@ -166,7 +238,7 @@ public class Main extends JavaPlugin
     	for (BlockFace f: faces)
     	{
     		if(b.getRelative(f) != null && b.getRelative(f).getType() == Material.GOLD_BLOCK)
-    			return b;
+    			return b.getRelative(f);
     	}
     	return null;
     }

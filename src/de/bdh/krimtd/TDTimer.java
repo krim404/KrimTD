@@ -14,7 +14,7 @@ public class TDTimer implements Runnable {
 	{
 		try
 		{
-			if (Math.abs(System.currentTimeMillis() - time) < 1000)
+			if (Math.abs(System.currentTimeMillis() - time) < 750)
 			{
 				return;
 			}
