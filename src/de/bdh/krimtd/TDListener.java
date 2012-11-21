@@ -1,10 +1,15 @@
 package de.bdh.krimtd;
 
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -169,6 +174,29 @@ public class TDListener implements Listener
 		
 		if(this.m.shots.get(event.getEntity()) != null)
 		{
+			//TODO: Radius anpassen
+			List<Entity> l = event.getEntity().getNearbyEntities(2.0, 1.0, 2.0);
+			if(l.size() > 0)
+			{
+				for (Entity e: l)
+		    	{
+					if(e instanceof LivingEntity)
+					{
+						if(this.m.mob.get(e) != null)
+						{
+							if(event.getEntity() instanceof Snowball)
+							{
+								//SCHNEEBALL
+								this.m.mob.get(e).slowed = 1;
+							} else
+							{
+								//ROCKET
+								
+							}
+						}
+					}
+		    	}
+			}
 			//Gefeuert von einem Tower (Schnee, Rocket)
 		}
     }
@@ -181,6 +209,7 @@ public class TDListener implements Listener
 			if(this.m.shots.get(event.getDamager()) != null)
 			{
 				//Gefeuert von einem Tower (Arrow)
+				event.setCancelled(true);
 			}
 		}
     }

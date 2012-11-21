@@ -1,9 +1,12 @@
 package de.bdh.krimtd;
 
+import org.bukkit.Bukkit;
 import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class TDMob 
@@ -56,7 +59,7 @@ public class TDMob
 		if(slowed == 1)
 		{
 			slowed = 0;
-			return spd / 2;
+			return spd / 3;
 		} else
 			return spd;
 	}
@@ -73,6 +76,17 @@ public class TDMob
 		} else
 		{
 			this.e.playEffect(EntityEffect.HURT);
+		}
+	}
+	
+	public void Tick(EffectUtil ef)
+	{
+		if(this.slowed == 1)
+		{
+			for (Player p: Bukkit.getServer().getOnlinePlayers()) 
+	    	{
+				ef.playPotionEffect(p,(CraftEntity)this.e, 0x0000FF, 200);
+	    	}
 		}
 	}
 

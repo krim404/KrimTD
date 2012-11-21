@@ -98,6 +98,12 @@ public class Main extends JavaPlugin
     
     public void Tick()
     {
+    	EffectUtil ef = new EffectUtil(this);
+    	for(Map.Entry<LivingEntity, TDMob> m: this.mob.entrySet())
+    	{
+    		m.getValue().Tick(ef);
+    	}
+    	
     	//Garbage Collector
     	for (Map.Entry<Entity,TDTower> sub : this.shots.entrySet())
 		{
