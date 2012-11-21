@@ -94,12 +94,12 @@ public class Main extends JavaPlugin
     HashMap<LivingEntity, TDMob> mob = new HashMap<LivingEntity,TDMob>();
     HashMap<Block, TDTower> Tower = new HashMap<Block,TDTower>();
     HashMap<LivingEntity, Location> ll = new HashMap<LivingEntity,Location>();
-    HashMap<Entity, Integer> shots = new HashMap<Entity,Integer>();
+    HashMap<Entity, TDTower> shots = new HashMap<Entity,TDTower>();
     
     public void Tick()
     {
     	//Garbage Collector
-    	for (Map.Entry<Entity,Integer> sub : this.shots.entrySet())
+    	for (Map.Entry<Entity,TDTower> sub : this.shots.entrySet())
 		{
 			if(sub.getKey().getTicksLived() > 100)
 				this.shots.remove(sub.getKey());

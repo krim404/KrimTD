@@ -5,9 +5,11 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Snowball;
 import org.bukkit.util.Vector;
 
 public class TDTower 
@@ -65,9 +67,12 @@ public class TDTower
 		} else if(tp == 8) // GRAU - Granaten
 		{
 			return 4;
-		} else if(tp == 1) // ORANGE - LevelTower
+		} else if(tp == 13) // GRÜN - BlockTower
 		{
 			return 5;
+		} else if(tp == 1) // ORANGE - LevelTower
+		{
+			return 6;
 		} else //Pfeiltower
 		{
 			return 0;
@@ -117,37 +122,90 @@ public class TDTower
 	}
 	 
 	
-	public void fireArrow(Location to)
+	public Entity fireArrow(Location to,boolean burning)
 	{
 		to.setY(to.getY()+1);
-		Location spawn = this.b.getWorld().getHighestBlockAt(this.b.getLocation()).getLocation();
+		Location spawn = this.b.getWorld().getHighestBlockAt(this.b.getLocation()).getLocation();  
+	 	spawn.setX(spawn.getX()+0.5);  
+	 	spawn.setZ(spawn.getZ()+0.5);  
+	 	spawn.setY(spawn.getY()+1);  
+	 	Vector delta = to.subtract(spawn).toVector();  
+	 	spawn.setPitch(getLookAtPitch(delta));   
+	 	spawn.setYaw(getLookAtYaw(delta));  
+	 	Location tmp = to.subtract(spawn);  
+	 	tmp.setPitch(getLookAtPitch(delta));   
+	 	tmp.setYaw(getLookAtYaw(delta));  
+	 		  
+	 	Arrow ar = b.getWorld().spawn(spawn, Arrow.class);  
+	 	ar.setVelocity(tmp.getDirection());  
+		if(burning == true)
+			ar.setFireTicks(60);
+		
+		return ar;
+	}
+	
+	public Entity fireSnowBall(Location to)
+	{
+		to.setY(to.getY()+1);
+		Location spawn = this.b.getWorld().getHighestBlockAt(this.b.getLocation()).getLocation();  
+	 	spawn.setX(spawn.getX()+0.5);  
+	 	spawn.setZ(spawn.getZ()+0.5);  
+	 	spawn.setY(spawn.getY()+1);  
+	 	Vector delta = to.subtract(spawn).toVector();  
+	 	spawn.setPitch(getLookAtPitch(delta));   
+	 	spawn.setYaw(getLookAtYaw(delta));  
+	 	Location tmp = to.subtract(spawn);  
+	 	tmp.setPitch(getLookAtPitch(delta));   
+	 	tmp.setYaw(getLookAtYaw(delta));  
+	 	
+		Snowball s = b.getWorld().spawn(spawn, Snowball.class);
+		s.setVelocity(tmp.getDirection());
+		return s;
+	}
+	
+	public Entity fireCharge(Location to)
+	{
+		Location from = this.b.getWorld().getHighestBlockAt(this.b.getLocation()).getLocation();
+		Location spawn = this.makeSpawn(from,to);
+		Location direction = this.makeVelocity(from,to);
+		
+		Fireball fball = this.b.getWorld().spawn(spawn.add(direction.getDirection()),Fireball.class);
+        fball.setIsIncendiary(false);
+        return fball;
+	}
+	
+	public Location makeVelocity(Location spawn,Location to)
+	{
+		Location tmp = to.subtract(spawn);
+		Vector delta = to.subtract(spawn).toVector();
+		tmp.setPitch(getLookAtPitch(delta)); 
+		tmp.setYaw(getLookAtYaw(delta));
+		return tmp;
+	}
+	
+	public Location makeSpawn(Location spawn,Location to)
+	{
 		spawn.setX(spawn.getX()+0.5);
 		spawn.setZ(spawn.getZ()+0.5);
 		spawn.setY(spawn.getY()+1);
 		Vector delta = to.subtract(spawn).toVector();
 		spawn.setPitch(getLookAtPitch(delta)); 
 		spawn.setYaw(getLookAtYaw(delta));
-		Location tmp = to.subtract(spawn);
-		tmp.setPitch(getLookAtPitch(delta)); 
-		tmp.setYaw(getLookAtYaw(delta));
-		
-		Arrow ar = b.getWorld().spawn(spawn, Arrow.class);
-		ar.setVelocity(tmp.getDirection());
-		this.m.shots.put(ar, 1);
+		return spawn;
 	}
 	
-	public void fireSnowBall(Location l)
+	public void doAEDamage(LivingEntity e)
 	{
-		
-	}
-	
-	public void fireCharge(Location l)
-	{
-		Block from = this.b.getWorld().getHighestBlockAt(this.b.getLocation());
-		Vector direction = l.getDirection().multiply(5);
-		Fireball fball = this.b.getWorld().spawn(from.getLocation().add(direction.getX(), direction.getY(), direction.getZ()),Fireball.class);
-        fball.setIsIncendiary(false);
-        this.m.shots.put(fball,1);
+		//Registrierter Mob
+		if(this.m.mob.get(e) != null)
+		{
+			//In Range?
+			if(e.getLocation().distance(this.b.getLocation()) < (4 + this.Level * 1.5))
+			{
+				//TODO: Balanciere Damage
+				this.m.mob.get(e).doDamage(10 * this.Level);
+			}
+		}
 	}
 	
 	public int getType()
@@ -162,25 +220,41 @@ public class TDTower
 		if(ticker > 10)
 		{
 			ticker = 0;
-			this.attack();
-		}
-		//TODO: Tick inkl Level zu Attack
-	}
-	
-	public void attack()
-	{
-		/*if(this.m.debug == true)
-			System.out.println("Tower FIRE");*/
-		
-		List<LivingEntity> ent = this.b.getWorld().getLivingEntities();
-		for (LivingEntity e: ent)
-    	{
-			if(e.getLocation().distance(this.b.getLocation()) < 10)
-			{
-				//this.fireCharge(e.getLocation());
-				this.fireArrow(e.getLocation());
-			}
-    	}
-		//TODO: Attack implementieren
+			
+			//TODO: Tick inkl Level des Towers zu Attackspeed addieren
+			
+			Entity c;
+			List<LivingEntity> ent = this.b.getWorld().getLivingEntities();
+			for (LivingEntity e: ent)
+	    	{
+				if(e.getLocation().distance(this.b.getLocation()) < 10)
+				{
+					c = null;
+					if(this.getType() == 1)
+					{
+						c = this.fireSnowBall(e.getLocation());
+					}
+					else if(this.getType() == 2)
+					{
+						c = this.fireArrow(e.getLocation(),true);
+					}
+					else if(this.getType() == 4)
+					{
+						c = this.fireCharge(e.getLocation());
+					}
+					else if(this.getType() == 0)
+					{
+						c = this.fireArrow(e.getLocation(),false);
+					} 
+					else if(this.getType() == 3)
+					{
+						this.doAEDamage(e);
+					}
+					
+					if(c != null)
+						this.m.shots.put(c, this);
+				}
+	    	}
+		} 
 	}
 }

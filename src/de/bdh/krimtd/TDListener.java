@@ -46,7 +46,17 @@ public class TDListener implements Listener
 				++lvl;
 			}
 			
-			if(lvl > 5)
+			if(TDTower.getType(event.getBlock().getData()) == 5 && lvl > 1)
+			{
+				event.setCancelled(true);
+				event.getPlayer().sendMessage("BlockTower are Maxxed on Level 1");
+			}
+			else if(this.m.getBlockAround(event.getBlock(), Material.WOOL) != null)
+			{
+				event.getPlayer().sendMessage("Cannot build so close to each other");
+				event.setCancelled(true);
+			}
+			else if(lvl > 5)
 			{
 				event.getPlayer().sendMessage("Tower is on max level");
 				event.setCancelled(true);
@@ -101,7 +111,7 @@ public class TDListener implements Listener
 			}
 			
 			//Machen wir sie dann erstmal unsterblich
-			event.setDamage(0);
+			event.setCancelled(true);
 		}
 	}
 	
