@@ -2,6 +2,7 @@ package de.bdh.krimtd;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.milkbowl.vault.economy.Economy;
 import net.minecraft.server.EntityCreature;
@@ -69,6 +70,9 @@ public class Main extends JavaPlugin
         TDTimer k = new TDTimer(this);
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, k, 1, 1);
         
+        TDAttackTimer kt = new TDAttackTimer(this);
+        Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, kt, 1, 1);
+        
     }
     
     public void killMob(LivingEntity e)
@@ -78,9 +82,16 @@ public class Main extends JavaPlugin
     	e.setHealth(0);
     }
     
+    public void TickTD()
+    {
+    	for (Map.Entry<Block,TDTower> entry : this.Tower.entrySet())
+    	{
+    		entry.getValue().tick();
+    	}
+    }
+    
     HashMap<LivingEntity, Location> eTo = new HashMap<LivingEntity,Location>();
-    HashMap<Block, Integer> Tower = new HashMap<Block,Integer>();
-    HashMap<Block, Player> TowerOwner = new HashMap<Block,Player>();
+    HashMap<Block, TDTower> Tower = new HashMap<Block,TDTower>();
     HashMap<LivingEntity, Location> ll = new HashMap<LivingEntity,Location>();
     public void Tick()
     {
@@ -289,17 +300,15 @@ public class Main extends JavaPlugin
     	if(debug == true)
     		System.out.println("Register Tower Level "+lvl+" for player: "+owner.getDisplayName());
     	
-    	this.TowerOwner.put(b, owner);
-    	this.Tower.put(b,lvl);
+    	this.Tower.put(b,new TDTower(this, b, lvl, owner));
     }
     
     public void unregisterTower(Block b)
     {
-    	if(debug == true && this.TowerOwner.get(b) != null && this.Tower.get(b) != null)
-	    	System.out.println("Unregistered Level "+this.Tower.get(b)+" Tower of player: " + this.TowerOwner.get(b).getDisplayName());
+    	if(debug == true && this.Tower.get(b) != null)
+	    	System.out.println("Unregistered Level "+this.Tower.get(b)+" Tower of player: " + this.Tower.get(b).owner.getDisplayName());
 	    	
 	    this.Tower.remove(b);
-    	this.TowerOwner.remove(b);
     }
     
     public void rePayPlayer(Block b,int lvl)
