@@ -3,12 +3,15 @@ package de.bdh.krimtd;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -36,6 +39,7 @@ public class TDListener implements Listener
 				tmp = tmp.getRelative(BlockFace.UP);
 				++lvl;
 			}
+			tmp = event.getBlock();
 			while(tmp.getRelative(BlockFace.DOWN).getData() == event.getBlock().getData() && tmp.getRelative(BlockFace.DOWN).getType() == event.getBlock().getType())
 			{
 				tmp = tmp.getRelative(BlockFace.DOWN);
@@ -71,6 +75,7 @@ public class TDListener implements Listener
 				tmp.setType(Material.AIR);
 				++lvl;
 			}
+			tmp = event.getBlock();
 			while(tmp.getRelative(BlockFace.DOWN).getData() == event.getBlock().getData() && tmp.getRelative(BlockFace.DOWN).getType() == event.getBlock().getType())
 			{
 				tmp = tmp.getRelative(BlockFace.DOWN);
@@ -83,6 +88,22 @@ public class TDListener implements Listener
 			
 		}
     }
+	
+	@EventHandler
+	public void onDoingDamage(EntityDamageByEntityEvent event)
+	{
+		if(this.m.mob.get(event.getEntity()) != null)
+		{
+			//Und nun nutzen wir unseren eigenen Handler
+			if(event.getDamager() instanceof Player)
+			{
+				this.m.mob.get(event.getEntity()).doDamage(event.getDamage());
+			}
+			
+			//Machen wir sie dann erstmal unsterblich
+			event.setDamage(0);
+		}
+	}
 	
 	@EventHandler
 	public void onPlayerClick(PlayerInteractEvent event)
@@ -120,6 +141,12 @@ public class TDListener implements Listener
 	public void onPlayerQuit(PlayerQuitEvent event)
 	{
 		this.m.MaxMobLevelPerPlayer.remove(event.getPlayer());
+	}
+	
+	@EventHandler
+	public void onEntityExplode(EntityExplodeEvent event)
+	{
+		event.blockList().clear();
 	}
 	
 	@EventHandler

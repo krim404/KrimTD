@@ -16,6 +16,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.entity.CraftCreature;
 import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -91,11 +92,19 @@ public class Main extends JavaPlugin
     }
     
     HashMap<LivingEntity, TDMob> mob = new HashMap<LivingEntity,TDMob>();
-    
     HashMap<Block, TDTower> Tower = new HashMap<Block,TDTower>();
     HashMap<LivingEntity, Location> ll = new HashMap<LivingEntity,Location>();
+    HashMap<Entity, Integer> shots = new HashMap<Entity,Integer>();
+    
     public void Tick()
     {
+    	//Garbage Collector
+    	for (Map.Entry<Entity,Integer> sub : this.shots.entrySet())
+		{
+			if(sub.getKey().getTicksLived() > 100)
+				this.shots.remove(sub.getKey());
+		}
+    	
     	List<World> wlds = Bukkit.getWorlds();
     	Block s = null;
     	Location to = null;

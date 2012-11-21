@@ -20,6 +20,7 @@ public class TDMob
 		this.e = e;
 		this.level = level;
 		this.hp = TDMob.getHP(TDMob.getType(e), level);
+		
 	}
 	
 	public static int getPrice(int typ)
