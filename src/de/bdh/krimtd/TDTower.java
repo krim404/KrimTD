@@ -1,5 +1,6 @@
 package de.bdh.krimtd;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -204,6 +205,10 @@ public class TDTower
 			{
 				//TODO: Balanciere Damage
 				this.m.mob.get(e).doDamage(10 * this.Level);
+				List<Location> smokeLocations = new ArrayList<Location>();
+                smokeLocations.add(e.getLocation());
+                smokeLocations.add(e.getLocation().clone().add(0.0D, 1.0D, 0.0D));
+                SmokeUtil.spawnCloudRandom(smokeLocations,(float)0.5);
 			}
 		}
 	}
