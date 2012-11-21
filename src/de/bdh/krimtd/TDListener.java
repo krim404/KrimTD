@@ -188,10 +188,12 @@ public class TDListener implements Listener
 							{
 								//SCHNEEBALL
 								this.m.mob.get(e).slowed = 1;
+								return; //Immer nur einer geht
 							} else
 							{
 								//ROCKET
-								
+								//TODO: Skalieren mit Level
+								this.m.mob.get(e).doDamage(10);
 							}
 						}
 					}
@@ -210,6 +212,12 @@ public class TDListener implements Listener
 			{
 				//Gefeuert von einem Tower (Arrow)
 				event.setCancelled(true);
+				if(this.m.mob.get(event.getEntity()) != null)
+				{
+					//Einer unserer Mobs
+					//TODO: Schaden anpassen an Level etc
+					this.m.mob.get(event.getEntity()).doDamage(5);
+				}
 			}
 		}
     }

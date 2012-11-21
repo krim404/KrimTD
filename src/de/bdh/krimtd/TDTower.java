@@ -221,10 +221,10 @@ public class TDTower
 		if(ticker > (55 - 10*Level))
 		{
 			ticker = 0;
-			
-			//TODO: Tick inkl Level des Towers zu Attackspeed addieren
-			
 			Entity c;
+			int amount = 1;
+			int gone = 0;
+			
 			List<LivingEntity> ent = this.b.getWorld().getLivingEntities();
 			for (LivingEntity e: ent)
 	    	{
@@ -236,6 +236,7 @@ public class TDTower
 						c = null;
 						if(this.getType() == 1)
 						{
+							amount = this.Level;
 							c = this.fireSnowBall(e.getLocation());
 						}
 						else if(this.getType() == 2)
@@ -252,11 +253,16 @@ public class TDTower
 						} 
 						else if(this.getType() == 3)
 						{
+							amount = 1000;
 							this.doAEDamage(e);
 						}
 						
 						if(c != null)
 							this.m.shots.put(c, this);
+						
+						++gone;
+						if(amount <= gone)
+							return;
 					}
 				}
 	    	}
