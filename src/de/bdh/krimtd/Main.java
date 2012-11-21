@@ -154,7 +154,8 @@ public class Main extends JavaPlugin
 				    				if(to != null)
 				    				{
 				    					this.eTo.put(e, to);
-				    					this.moveMob(e, to, 0.4f);
+				    					//TODO: Geschwindkeit anpassen
+				    					this.moveMob(e, to, 0.3f);
 				    				}
 				    				//Keine weiteren vorhanden. Kill
 				    				else if(debug == true)
@@ -314,6 +315,11 @@ public class Main extends JavaPlugin
     public void rePayPlayer(Block b,int lvl)
     {
     	//TODO
+    	if(this.Tower.get(b) != null)
+    	{
+    		int money = this.Tower.get(b).getPrice();
+    		money = (int) (money * 0.9);
+    	}
     }
     
     public String readSign(Block b,int line)

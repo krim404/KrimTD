@@ -17,24 +17,55 @@ public class TDTower
 		this.owner = owner;
 	}
 	
-	public int getType()
+	public static int getPrice(int tp, int lvl)
 	{
-		if(this.b.getData() == 11) //BLUE - EISTOWER
+		//TODO
+		return 1;
+	}
+	
+	public int getPrice()
+	{
+		int price = 0;
+		for(int i = this.Level; i > 0; --i)
+		{
+			price += TDTower.getPrice(this.getType(), i);
+		}
+		return price;
+	}
+	
+	public static int getRadius(int lvl)
+	{
+		return lvl * 2;
+	}
+	
+	public int getRadius()
+	{
+		return TDTower.getRadius(this.Level);
+	}
+	
+	public static int getType(int tp)
+	{
+		if(tp == 11) //BLUE - EISTOWER
 		{
 			return 1;
-		} else if(this.b.getData() == 14) //ROT - Flammentower
+		} else if(tp == 14) //ROT - Flammentower
 		{
 			return 2;
-		} else if(this.b.getData() == 15) //SCHWARZ - AEDD
+		} else if(tp == 15) //SCHWARZ - AEDD
 		{
 			return 3;
-		} else if(this.b.getData() == 8) // GRAU - Granaten
+		} else if(tp == 8) // GRAU - Granaten
 		{
 			return 4;
 		} else //Pfeiltower
 		{
 			return 0;
 		}
+		
+	}
+	public int getType()
+	{
+		return TDTower.getType(this.b.getData());
 	}
 	
 	public void tick()

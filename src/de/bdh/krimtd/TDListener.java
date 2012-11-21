@@ -37,7 +37,16 @@ public class TDListener implements Listener
 				++lvl;
 			}
 			
-			this.m.registerTower(tmp, lvl,event.getPlayer());
+			if(lvl > 5)
+			{
+				event.getPlayer().sendMessage("Tower is on max level");
+				event.setCancelled(true);
+			}
+			else
+			{
+				event.getPlayer().sendMessage("Tower is now level "+ lvl);
+				this.m.registerTower(tmp, lvl,event.getPlayer());
+			}
 		}
     }
 	
@@ -64,8 +73,9 @@ public class TDListener implements Listener
 				++lvl;
 			}
 			
-			this.m.unregisterTower(event.getBlock());
 			this.m.rePayPlayer(tmp, lvl);
+			this.m.unregisterTower(tmp);
+			
 		}
     }
 }
