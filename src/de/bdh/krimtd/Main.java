@@ -79,6 +79,8 @@ public class Main extends JavaPlugin
     }
     
     HashMap<LivingEntity, Location> eTo = new HashMap<LivingEntity,Location>();
+    HashMap<Block, Integer> Tower = new HashMap<Block,Integer>();
+    HashMap<Block, Player> TowerOwner = new HashMap<Block,Player>();
     HashMap<LivingEntity, Location> ll = new HashMap<LivingEntity,Location>();
     public void Tick()
     {
@@ -280,6 +282,29 @@ public class Main extends JavaPlugin
             }
         }
     	return am;
+    }
+    
+    public void registerTower(Block b,int lvl,Player owner)
+    {
+    	if(debug == true)
+    		System.out.println("Register Tower Level "+lvl+" for player: "+owner.getDisplayName());
+    	
+    	this.TowerOwner.put(b, owner);
+    	this.Tower.put(b,lvl);
+    }
+    
+    public void unregisterTower(Block b)
+    {
+    	if(debug == true && this.TowerOwner.get(b) != null && this.Tower.get(b) != null)
+	    	System.out.println("Unregistered Level "+this.Tower.get(b)+" Tower of player: " + this.TowerOwner.get(b).getDisplayName());
+	    	
+	    this.Tower.remove(b);
+    	this.TowerOwner.remove(b);
+    }
+    
+    public void rePayPlayer(Block b,int lvl)
+    {
+    	//TODO
     }
     
     public String readSign(Block b,int line)
