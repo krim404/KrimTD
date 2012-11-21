@@ -7,6 +7,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
@@ -16,6 +17,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
@@ -189,7 +192,7 @@ public class TDListener implements Listener
 								//SCHNEEBALL
 								this.m.mob.get(e).slowed = 1;
 								return; //Immer nur einer geht
-							} else
+							} else if(event.getEntity() instanceof Fireball)
 							{
 								//ROCKET
 								//TODO: Skalieren mit Level
@@ -200,6 +203,20 @@ public class TDListener implements Listener
 		    	}
 			}
 			//Gefeuert von einem Tower (Schnee, Rocket)
+		}
+    }
+	
+	@EventHandler
+	public void onFire(EntityDamageEvent event)
+    {
+		if(event.getCause() == DamageCause.FIRE_TICK || event.getCause() == DamageCause.FIRE)
+		{
+			if(this.m.mob.get(event.getEntity()) != null)
+			{
+				event.setCancelled(true);
+				//TODO: Balance Fire Damage
+				this.m.mob.get(event.getEntity()).doDamage(2);
+			}
 		}
     }
 	
@@ -216,7 +233,11 @@ public class TDListener implements Listener
 				{
 					//Einer unserer Mobs
 					//TODO: Schaden anpassen an Level etc
-					this.m.mob.get(event.getEntity()).doDamage(5);
+					if(event.getDamager().getFireTicks() > 0)
+					{
+						event.getEntity().setFireTicks(80);
+					} else
+						this.m.mob.get(event.getEntity()).doDamage(5);
 				}
 			}
 		}
