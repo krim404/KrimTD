@@ -77,8 +77,8 @@ public class Main extends JavaPlugin
     
     public void killMob(LivingEntity e)
     {
-    	this.eTo.remove(e);
     	this.ll.remove(e);
+    	this.mob.remove(e);
     	e.setHealth(0);
     }
     
@@ -90,7 +90,8 @@ public class Main extends JavaPlugin
     	}
     }
     
-    HashMap<LivingEntity, Location> eTo = new HashMap<LivingEntity,Location>();
+    HashMap<LivingEntity, TDMob> mob = new HashMap<LivingEntity,TDMob>();
+    
     HashMap<Block, TDTower> Tower = new HashMap<Block,TDTower>();
     HashMap<LivingEntity, Location> ll = new HashMap<LivingEntity,Location>();
     public void Tick()
@@ -119,7 +120,7 @@ public class Main extends JavaPlugin
     						rego = true;
     					}
     					
-	    				if(this.eTo.get(e) == null || rego == true || (this.eTo.get(e) != null && e.getLocation().distance(this.eTo.get(e)) < 2.0))
+	    				if(this.mob.get(e) == null || rego == true || (this.mob.get(e) != null && e.getLocation().distance(this.mob.get(e).target) < 2.0))
 	    				{
 			    			s = getSpongeBelow(e.getLocation(),4);
 			    			if(s != null)
@@ -138,11 +139,11 @@ public class Main extends JavaPlugin
 			    					String name = this.readSign(sign,1);
 			    					if(count == 0)
 			    					{
-			    						this.sendall("The TEAM "+name+" has lost the game!");
+			    						this.sendall("The Team "+name+" has lost the game!");
 			    						//Verloren
 			    					} else if(count > 0)
 			    					{
-			    						this.sendall("The TEAM "+name+" has "+count+" lives left");
+			    						this.sendall("The Team "+name+" has "+count+" lives left");
 			    						//Leben abziehen
 			    					}
 			    					this.killMob(e);
@@ -153,9 +154,21 @@ public class Main extends JavaPlugin
 				    				to = this.findNextPoint(e.getLocation());
 				    				if(to != null)
 				    				{
-				    					this.eTo.put(e, to);
-				    					//TODO: Geschwindkeit anpassen
-				    					this.moveMob(e, to, 0.3f);
+				    					TDMob m;
+				    					
+				    					//Mob Importer - Stufe 1
+				    					if(this.mob.get(e) == null)
+				    					{
+				    						m = new TDMob(this,e,1);
+				    						this.mob.put(e, m);
+				    						if(this.debug == true)
+				    							System.out.println("New Mob registered");
+				    						
+				    					} else
+				    						 m = this.mob.get(e);
+				    					
+				    					m.target = to;
+				    					this.moveMob(e, to, TDMob.getSpeed(e));
 				    				}
 				    				//Keine weiteren vorhanden. Kill
 				    				else if(debug == true)
@@ -293,6 +306,35 @@ public class Main extends JavaPlugin
                 }
             }
         }
+    	return am;
+    }
+    
+    
+    HashMap<Player, Integer> MaxMobLevelPerPlayer = new HashMap<Player,Integer>();
+    public int calcMaxMobLevel(Location l)
+    {
+    	int rad = 5;
+    	int am = 0;
+    	Block t;
+    	Block b = l.getBlock();
+    	for(int i$ = (rad * -1); i$ < rad; i$++)
+        {
+        	for(int j$ = (rad * -1); j$ < rad; j$++)
+            {
+        		for(int k$ = (rad * -1); k$ < rad; k$++)
+                {
+        			t = b.getRelative(i$, j$, k$);
+        			if(t.getType() == Material.WOOL && t.getData() == 1) //ORANGE
+        			{
+        				++am;
+        			}
+        			
+                }
+            }
+        }
+    	
+    	if(debug == true)
+    		System.out.println("Max Mob Level is: "+am);
     	return am;
     }
     
