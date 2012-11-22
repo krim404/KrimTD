@@ -439,13 +439,19 @@ public class Main extends JavaPlugin
 	    this.Tower.remove(b);
     }
     
-    public void rePayPlayer(Block b,int lvl)
+    public void rePayPlayer(Block b,int lvl,Player p)
     {
-    	//TODO
     	if(this.Tower.get(b) != null)
     	{
     		int money = this.Tower.get(b).getPrice();
-    		money = (int) (money * 0.9);
+    		money = (int) (money * 0.7);
+    		p.sendMessage("You've got "+money+" for selling the tower");
+    		int oldMon = 0;
+    		if(this.Money.get(p) != null)
+    			oldMon = this.Money.get(p);
+    		
+    		oldMon += money;
+    		this.Money.put(p, oldMon);
     	}
     }
     

@@ -29,6 +29,35 @@ public class TDTower
 		this.l = l;
 	}
 	
+	public static String name(int tp)
+	{
+		if(tp == 1) //EIS
+		{
+			return "Slow";
+		} else if(tp == 2) //Flame
+		{
+			return "Fire";
+		} else if(tp == 3) //PBAOE
+		{
+			return "Doom";
+		} else if(tp == 4) //AE
+		{
+			return "Rocket";
+		} else if(tp == 5) //Block
+		{
+			return "Block";
+		} else if(tp == 6) //Level
+		{
+			return "Level-Up";
+		} else if(tp == 7) //HeavyDamage
+		{
+			return "Heavy Damage";
+		} else //Arrow
+		{
+			return "Arrow";
+		}
+	}
+	
 	public static int getPrice(int tp, int lvl)
 	{
 		int price = 0;

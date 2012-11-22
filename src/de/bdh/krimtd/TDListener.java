@@ -25,6 +25,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
@@ -92,10 +93,24 @@ public class TDListener implements Listener
 			}
 			else
 			{
-				event.getPlayer().sendMessage("Tower is now level "+ lvl);
-				this.m.registerTower(tmp, lvl,event.getPlayer());
+				int type = TDTower.getType(event.getBlock().getData());
+				int mon = 0;
+				if(this.m.Money.get(event.getPlayer()) != null)
+					mon = this.m.Money.get(event.getPlayer());
+				int price = TDTower.getPrice(type, lvl);
+				if(price > mon)
+				{
+					event.getPlayer().sendMessage("You can't afford to build this tower.");
+					event.setCancelled(true);
+				} else
+				{
+					event.getPlayer().sendMessage(TDTower.name(type)+" Tower is level "+ lvl);
+					this.m.registerTower(tmp, lvl,event.getPlayer());
+					this.m.Money.put(event.getPlayer(),(mon-price));
+				}
 			}
-		}
+		} else if(!event.getPlayer().hasPermission("td.admin"))
+			event.setCancelled(true);
     }
 	
 	@EventHandler
@@ -122,9 +137,12 @@ public class TDListener implements Listener
 				++lvl;
 			}
 			
-			this.m.rePayPlayer(tmp, lvl);
+			this.m.rePayPlayer(tmp, lvl,event.getPlayer());
 			this.m.unregisterTower(tmp);
 			
+		} else if(!event.getPlayer().hasPermission("td.admin"))
+		{
+			event.setCancelled(true);
 		}
     }
 	
@@ -298,6 +316,13 @@ public class TDListener implements Listener
 		//Nix wird on Death gedroppt
 		event.getDrops().clear();
     }
+	
+	@EventHandler
+	public void onBlockDrop(PlayerDropItemEvent event)
+	{
+		//Wir können nichts aus dem Inventar droppen
+		event.setCancelled(true);
+	}
 	
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event)
