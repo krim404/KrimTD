@@ -358,7 +358,7 @@ public class Main extends JavaPlugin
     	if(debug == true)
     		System.out.println("Register Tower Level "+lvl+" for player: "+owner.getDisplayName());
     	
-    	this.Tower.put(b,new TDTower(this, b, lvl, owner));
+    	this.Tower.put(b,new TDTower(this, b, lvl, owner,b.getLocation()));
     }
     
     public void unregisterTower(Block b)

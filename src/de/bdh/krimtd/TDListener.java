@@ -177,32 +177,33 @@ public class TDListener implements Listener
 		
 		if(this.m.shots.get(event.getEntity()) != null)
 		{
-			//TODO: Radius anpassen
-			List<Entity> l = event.getEntity().getNearbyEntities(2.0, 1.0, 2.0);
+			List<Entity> l = event.getEntity().getNearbyEntities(6.0, 6.0, 6.0);
 			if(l.size() > 0)
 			{
 				for (Entity e: l)
 		    	{
 					if(e instanceof LivingEntity)
 					{
-						if(this.m.mob.get(e) != null)
+						if(this.m.mob.get(e) != null) //Gefeuert von einem Tower (Schnee, Rocket)
 						{
 							if(event.getEntity() instanceof Snowball)
 							{
 								//SCHNEEBALL
-								this.m.mob.get(e).slowed = 1;
+								this.m.mob.get(e).slowed = this.m.shots.get(event.getEntity()).getSlowTime();
 								return; //Immer nur einer geht
 							} else if(event.getEntity() instanceof Fireball)
 							{
 								//ROCKET
-								//TODO: Skalieren mit Level
-								this.m.mob.get(e).doDamage(10);
+								TDTower t = this.m.shots.get(event.getEntity());
+								float range = t.getAERange();
+								if(e.getLocation().distance(event.getEntity().getLocation()) < range)
+									t.doDamage(this.m.mob.get(e));
 							}
 						}
 					}
 		    	}
 			}
-			//Gefeuert von einem Tower (Schnee, Rocket)
+
 		}
     }
 	
@@ -214,8 +215,12 @@ public class TDListener implements Listener
 			if(this.m.mob.get(event.getEntity()) != null)
 			{
 				event.setCancelled(true);
-				//TODO: Balance Fire Damage
-				this.m.mob.get(event.getEntity()).doDamage(2);
+				TDMob m = this.m.mob.get(event.getEntity());
+				if(m.fireDamageFrom != null)
+				{
+					m.fireDamageFrom.doDamage(m);
+				} else	
+					m.doDamage(1);
 			}
 		}
     }
@@ -231,13 +236,15 @@ public class TDListener implements Listener
 				event.setCancelled(true);
 				if(this.m.mob.get(event.getEntity()) != null)
 				{
-					//Einer unserer Mobs
-					//TODO: Schaden anpassen an Level etc
+					TDTower t = this.m.shots.get(event.getDamager());
+					
 					if(event.getDamager().getFireTicks() > 0)
 					{
-						event.getEntity().setFireTicks(80);
+						int tt = t.getFireTicks() * 20;
+						event.getEntity().setFireTicks(tt);
+						this.m.mob.get(event.getEntity()).fireDamageFrom = t;
 					} else
-						this.m.mob.get(event.getEntity()).doDamage(5);
+						t.doDamage(this.m.mob.get(event.getEntity()));
 				}
 			}
 		}

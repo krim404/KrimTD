@@ -19,18 +19,56 @@ public class TDTower
 	Block b;
 	int Level;
 	public Player owner;
-	public TDTower(Main m, Block b, int Level, Player owner)
+	public Location l;
+	public TDTower(Main m, Block b, int Level, Player owner,Location l)
 	{
 		this.m = m;
 		this.b = b;
 		this.Level = Level;
 		this.owner = owner;
+		this.l = l;
 	}
 	
 	public static int getPrice(int tp, int lvl)
 	{
-		//TODO: Preise festlegen
-		return 1;
+		int price = 0;
+		int mult = 1;
+		
+		if(lvl == 5)
+			mult = 10*25*5;
+		else if(lvl == 4)
+			mult = 10*25;
+		else if(lvl == 3)
+			mult = 10*5;
+		else if(lvl == 2)
+			mult = 5;
+		
+		if(tp == 1) //EIS
+		{
+			price = 100;
+		} else if(tp == 2) //Flame
+		{
+			price = 80;
+		} else if(tp == 3) //PBAOE
+		{
+			price = 1000;
+		} else if(tp == 4) //AE
+		{
+			price = 200;
+		} else if(tp == 5) //Block
+		{
+			price = 5;
+		} else if(tp == 6) //Level
+		{
+			price = 10;
+		} else if(tp == 7) //Sniper
+		{
+			price = 500;
+		} else if(tp == 0) //Arrow
+		{
+			price = 50;
+		}
+		return price * mult;
 	}
 	
 	public int getPrice()
@@ -74,6 +112,9 @@ public class TDTower
 		} else if(tp == 1) // ORANGE - LevelTower
 		{
 			return 6;
+		} else if(tp == 11) // Purple - Sniper
+		{
+			return 7;
 		} else //Pfeiltower
 		{
 			return 0;
@@ -123,13 +164,13 @@ public class TDTower
 	}
 	 
 	
-	public Entity fireArrow(Location to,boolean burning)
+	public Entity fireArrow(Location to,boolean burning,int rangeMultip)
 	{
 		to.setY(to.getY()+1);
 		Location spawn = this.b.getWorld().getHighestBlockAt(this.b.getLocation()).getLocation();  
 	 	spawn.setX(spawn.getX()+0.5);  
 	 	spawn.setZ(spawn.getZ()+0.5);  
-	 	spawn.setY(spawn.getY()+1);  
+	 	spawn.setY(spawn.getY()+rangeMultip);  
 	 	Vector delta = to.subtract(spawn).toVector();  
 	 	spawn.setPitch(getLookAtPitch(delta));   
 	 	spawn.setYaw(getLookAtYaw(delta));  
@@ -138,7 +179,7 @@ public class TDTower
 	 	tmp.setYaw(getLookAtYaw(delta));  
 	 		  
 	 	Arrow ar = b.getWorld().spawn(spawn, Arrow.class);  
-	 	ar.setVelocity(tmp.getDirection());  
+	 	ar.setVelocity(tmp.getDirection().multiply(rangeMultip));  
 		if(burning == true)
 			ar.setFireTicks(60);
 		
@@ -198,15 +239,98 @@ public class TDTower
 	public void doAEDamage(LivingEntity e)
 	{
 		//In Range?
-		if(e.getLocation().distance(this.b.getLocation()) < (1 + this.Level * 1.2))
+		if(e.getLocation().distance(this.b.getLocation()) < (2.5 + this.Level * 0.5))
 		{
-			//TODO: Balanciere Damage
-			this.m.mob.get(e).doDamage(10 * this.Level);
+			//DAMAGE
 			List<Location> smokeLocations = new ArrayList<Location>();
             smokeLocations.add(e.getLocation());
             smokeLocations.add(e.getLocation().clone().add(0.0D, 1.0D, 0.0D));
             SmokeUtil.spawnCloudRandom(smokeLocations,(float)0.5);
+            this.doDamage(this.m.mob.get(e));
 		}
+	}
+	
+	public boolean doDamage(TDMob m)
+	{
+		int dmg = 1;
+		int tp = this.getType();
+		
+		if(tp == 1) //EIS
+		{
+			dmg = 0;
+			if(this.Level == 2)
+				dmg = 0;
+			else if(this.Level == 3)
+				dmg = 10;
+			else if(this.Level == 4)
+				dmg = 50;
+			else if(this.Level == 5)
+				dmg = 200;
+		} else if(tp == 2) //Flame per Fire Tick
+		{
+			dmg = 1;
+			if(this.Level == 2)
+				dmg = 2;
+			else if(this.Level == 3)
+				dmg = 20;
+			else if(this.Level == 4)
+				dmg = 120;
+			else if(this.Level == 5)
+				dmg = 700;
+		} else if(tp == 3) //PBAOE
+		{
+			dmg = 2;
+			if(this.Level == 2)
+				dmg = 10;
+			else if(this.Level == 3)
+				dmg = 50;
+			else if(this.Level == 4)
+				dmg = 250;
+			else if(this.Level == 5)
+				dmg = 1200;
+		} else if(tp == 4) //AE
+		{
+			dmg = 10;
+			if(this.Level == 2)
+				dmg = 50;
+			else if(this.Level == 3)
+				dmg = 300;
+			else if(this.Level == 4)
+				dmg = 1500;
+			else if(this.Level == 5)
+				dmg = 4000;
+		} else if(tp == 5) //Block
+		{
+			dmg = 0;
+		} else if(tp == 6) //Level
+		{
+			dmg = 0;
+		} else if(tp == 7) //Sniper
+		{
+			dmg = 50;
+			if(this.Level == 2)
+				dmg = 300;
+			else if(this.Level == 3)
+				dmg = 1500;
+			else if(this.Level == 4)
+				dmg = 8000;
+			else if(this.Level == 5)
+				dmg = 50000;
+		} else if(tp == 0) //Arrow
+		{
+			dmg = 5;
+			if(this.Level == 2)
+				dmg = 20;
+			else if(this.Level == 3)
+				dmg = 100;
+			else if(this.Level == 4)
+				dmg = 500;
+			else if(this.Level == 5)
+				dmg = 2000;
+		}
+		
+		m.doDamage(dmg);
+		return true;
 	}
 	
 	public int getType()
@@ -214,15 +338,80 @@ public class TDTower
 		return TDTower.getType(this.b.getData());
 	}
 	
+	public int getSlowTime()
+	{
+		int slow = 2;
+		if(this.Level == 3)
+			slow = 3;
+		if(this.Level >= 4)
+			slow = 4;
+		return slow;
+	}
+	
+	public int getFireTicks()
+	{
+		if(this.Level == 1)
+			return 10;
+		else if(this.Level == 5)
+			return 20;
+		else return 15;
+	}
+	
+	public float getAERange() //Range vom AE Tower
+	{
+		return (float) (this.Level * 0.5 + 0.5);
+	}
+	
 	private int ticker = 0;
 	public void tick()
 	{
 		++ticker;
-		if(ticker > (55 - 10*Level))
+		int everytick = 10;
+		int range = 10;
+		int amount = 1;
+		
+		//Angriffsgeschwindigkeit und Menge
+		if(this.getType() == 1) //Slow
+		{
+			amount = this.Level;
+			everytick = 30;
+			if(Level == 3)
+				everytick = 20;
+			else if(Level > 3)
+				everytick = 10;
+		}
+		else if(this.getType() == 2) //DoT
+		{
+		}
+		else if(this.getType() == 4) //AEDD
+		{
+			//Range in Listener
+			everytick = 20;
+		}
+		else if(this.getType() == 0) //ARROW
+		{
+			if(this.Level == 3)
+				amount = 2;
+			else if(this.Level == 4)
+				amount = 3;
+			if(this.Level == 5)
+				amount = 5;
+		} 
+		else if(this.getType() == 3) //PBAEDD
+		{
+			amount = 1000;
+			everytick = 2;
+		}
+		else if(this.getType() == 7) //Sniper
+		{
+			everytick = 50;
+			range = 100;
+		}
+
+		if(ticker > everytick)
 		{
 			ticker = 0;
 			Entity c;
-			int amount = 1;
 			int gone = 0;
 			
 			List<LivingEntity> ent = this.b.getWorld().getLivingEntities();
@@ -231,30 +420,33 @@ public class TDTower
 				//Registrierter Mob
 				if(this.m.mob.get(e) != null)
 				{
-					if(e.getLocation().distance(this.b.getLocation()) < 10)
+					//Damage
+					if(e.getLocation().distance(this.b.getLocation()) <= range)
 					{
 						c = null;
-						if(this.getType() == 1)
+						if(this.getType() == 1) //Slow
 						{
-							amount = this.Level;
 							c = this.fireSnowBall(e.getLocation());
 						}
-						else if(this.getType() == 2)
+						else if(this.getType() == 2) //DoT
 						{
-							c = this.fireArrow(e.getLocation(),true);
+							c = this.fireArrow(e.getLocation(),true,1);
 						}
-						else if(this.getType() == 4)
+						else if(this.getType() == 4) //AEDD
 						{
 							c = this.fireCharge(e.getLocation());
 						}
-						else if(this.getType() == 0)
+						else if(this.getType() == 0) //ARROW
 						{
-							c = this.fireArrow(e.getLocation(),false);
+							c = this.fireArrow(e.getLocation(),false,1);
 						} 
-						else if(this.getType() == 3)
+						else if(this.getType() == 3) //PBAEDD
 						{
-							amount = 1000;
 							this.doAEDamage(e);
+						}
+						else if(this.getType() == 7) //Sniper
+						{
+							c = this.fireArrow(e.getLocation(),false,5);
 						}
 						
 						if(c != null)
