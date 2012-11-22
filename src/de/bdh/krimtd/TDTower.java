@@ -61,7 +61,7 @@ public class TDTower
 		} else if(tp == 6) //Level
 		{
 			price = 10;
-		} else if(tp == 7) //Sniper
+		} else if(tp == 7) //HeavyDamage
 		{
 			price = 500;
 		} else if(tp == 0) //Arrow
@@ -112,7 +112,7 @@ public class TDTower
 		} else if(tp == 1) // ORANGE - LevelTower
 		{
 			return 6;
-		} else if(tp == 11) // Purple - Sniper
+		} else if(tp == 11) // Purple - HeavyDamage
 		{
 			return 7;
 		} else //Pfeiltower
@@ -210,7 +210,7 @@ public class TDTower
 		Location from = this.b.getWorld().getHighestBlockAt(this.b.getLocation()).getLocation();
 		Location spawn = this.makeSpawn(from,to);
 		Location direction = this.makeVelocity(from,to);
-		
+	 	
 		Fireball fball = this.b.getWorld().spawn(spawn.add(direction.getDirection()),Fireball.class);
         fball.setIsIncendiary(false);
         return fball;
@@ -305,17 +305,17 @@ public class TDTower
 		} else if(tp == 6) //Level
 		{
 			dmg = 0;
-		} else if(tp == 7) //Sniper
+		} else if(tp == 7) //HeavyDamage
 		{
-			dmg = 50;
+			dmg = 100;
 			if(this.Level == 2)
-				dmg = 300;
+				dmg = 600;
 			else if(this.Level == 3)
-				dmg = 1500;
+				dmg = 3000;
 			else if(this.Level == 4)
-				dmg = 8000;
+				dmg = 16000;
 			else if(this.Level == 5)
-				dmg = 50000;
+				dmg = 100000;
 		} else if(tp == 0) //Arrow
 		{
 			dmg = 5;
@@ -359,7 +359,7 @@ public class TDTower
 	
 	public float getAERange() //Range vom AE Tower
 	{
-		return (float) (this.Level * 0.5 + 0.5);
+		return (float) (this.Level * 0.5 + 1.5);
 	}
 	
 	private int ticker = 0;
@@ -402,10 +402,11 @@ public class TDTower
 			amount = 1000;
 			everytick = 2;
 		}
-		else if(this.getType() == 7) //Sniper
+		else if(this.getType() == 7) //HeavyDamage
 		{
 			everytick = 50;
 			range = 100;
+			amount = 1;
 		}
 
 		if(ticker > everytick)
@@ -444,7 +445,7 @@ public class TDTower
 						{
 							this.doAEDamage(e);
 						}
-						else if(this.getType() == 7) //Sniper
+						else if(this.getType() == 7) //HeavyDamage
 						{
 							c = this.fireArrow(e.getLocation(),false,5);
 						}

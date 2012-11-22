@@ -96,8 +96,23 @@ public class Main extends JavaPlugin
     HashMap<LivingEntity, Location> ll = new HashMap<LivingEntity,Location>();
     HashMap<Entity, TDTower> shots = new HashMap<Entity,TDTower>();
     
+    public void TickIncome()
+    {
+    	
+    }
+    
+    int tck = 0;
     public void Tick()
     {
+    	//Jede Minute
+    	if(tck >= 120)
+    	{
+    		this.TickIncome();
+    		tck = 0;
+    	} else
+    		++tck;
+    	
+    	
     	EffectUtil ef = new EffectUtil(this);
     	for(Map.Entry<LivingEntity, TDMob> m: this.mob.entrySet())
     	{

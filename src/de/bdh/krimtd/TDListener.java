@@ -61,9 +61,14 @@ public class TDListener implements Listener
 				event.setCancelled(true);
 				event.getPlayer().sendMessage("BlockTower are Maxxed on Level 1");
 			}
-			else if(this.m.getBlockAround(event.getBlock(), Material.WOOL) != null)
+			else if(this.m.getBlockAround(event.getBlock(), Material.WOOL) != null && TDTower.getType(event.getBlock().getData()) != 5)
 			{
 				event.getPlayer().sendMessage("Cannot build so close to each other");
+				event.setCancelled(true);
+			}
+			else if(event.getBlock().getRelative(BlockFace.DOWN).getType() == Material.WOOL && event.getBlock().getRelative(BlockFace.DOWN).getData() != event.getBlock().getData())
+			{
+				event.getPlayer().sendMessage("Cannot build on another tower");
 				event.setCancelled(true);
 			}
 			else if(lvl > 5)
