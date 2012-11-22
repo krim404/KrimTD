@@ -269,6 +269,20 @@ public class Main extends JavaPlugin
     	return null;
     }
     
+    public boolean isAboveWayPoint(Block b)
+    {
+    	Block tmp;
+    	for(int i = 0; i > -5; --i)
+    	{
+    		tmp = b.getRelative(0, i, 0);
+    		if(tmp != null)
+    		{
+    			if(tmp.getType() == Material.SPONGE)
+    				return true;
+    		}
+    	}
+    	return false;
+    }
     public boolean closeToPoint(Location l, int rad)
     {
     	if(l.getBlock() != null)

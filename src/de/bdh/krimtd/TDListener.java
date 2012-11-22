@@ -76,6 +76,11 @@ public class TDListener implements Listener
 				event.getPlayer().sendMessage("Cannot build on the lane");
 				event.setCancelled(true);
 			}
+			else if(TDTower.getType(event.getBlock().getData()) == 5 && this.m.isAboveWayPoint(event.getBlock()))
+			{
+				event.getPlayer().sendMessage("Cannot build on a waypoint");
+				event.setCancelled(true);
+			}
 			else if(lvl > 5)
 			{
 				event.getPlayer().sendMessage("Tower is on max level");
