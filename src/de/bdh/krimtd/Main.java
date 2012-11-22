@@ -24,7 +24,6 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
-
 public class Main extends JavaPlugin
 {
 	public Economy econ = null;
@@ -74,6 +73,8 @@ public class Main extends JavaPlugin
         TDAttackTimer kt = new TDAttackTimer(this);
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, kt, 1, 1);
         
+        Commander c = new Commander(this);
+        getCommand("td").setExecutor(c); 
     }
     
     public void killMob(LivingEntity e)

@@ -3,11 +3,13 @@ package de.bdh.krimtd;
 import java.util.List;
 
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -230,12 +232,42 @@ public class TDListener implements Listener
 			}
 			else if(oldDur == 99)
 			{
+				newDur = 64;
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Withers with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+			}
+			else if(oldDur == 64)
+			{
 				newDur = 93;
 				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Chickens with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			event.getPlayer().getItemInHand().setDurability(newDur);
+		} else if(event.getAction() == Action.RIGHT_CLICK_BLOCK &&  event.getItem() != null && event.getItem().getType() == Material.MONSTER_EGG)
+		{
+			event.setCancelled(true);
+			//Spawn Mob with Level
+            Location to = this.m.findNextPoint(event.getClickedBlock().getLocation());
+			if(to != null)
+			{
+				EntityType type = TDMob.getBukkitType(TDMob.getType(event.getItem().getDurability()));
+				Location l = event.getClickedBlock().getLocation();
+				l.setY(l.getY()+2);
+				
+				LivingEntity mob = (LivingEntity) event.getPlayer().getWorld().spawnEntity(l, type);
+	            mob.setHealth(1);
+	            
+				TDMob m;
+				int lvl = 1;
+				if(this.m.MaxMobLevelPerPlayer.get(event.getPlayer()) != null)
+					lvl = this.m.MaxMobLevelPerPlayer.get(event.getPlayer());
+				
+				if(this.m.mob.get(mob) == null)
+				{
+					m = new TDMob(this.m,mob,lvl);
+					m.target = to;
+					this.m.moveMob(mob, to, m.getSpeed());
+				}
+			}
 		}
-		
 		
 		//TODO: Spawn Mobs manuell und schmeiss sie in die TDMob
 	}

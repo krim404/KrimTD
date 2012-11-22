@@ -8,6 +8,7 @@ import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Cow;
 import org.bukkit.entity.Creeper;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.IronGolem;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Pig;
@@ -16,6 +17,7 @@ import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Witch;
+import org.bukkit.entity.Wither;
 import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Zombie;
 import org.bukkit.inventory.ItemStack;
@@ -45,8 +47,34 @@ public class TDMob
 	
 	public static int getPrice(int typ, int level)
 	{
-		//TODO Preis
-		return 1;
+		int price = 10;
+		if(typ == 1)
+			price = 10;
+		else if(typ == 2)
+			price = 20;
+		else if(typ == 3)
+			price = 40;
+		else if(typ == 4)
+			price = 100;
+		else if(typ == 5)
+			price = 250;
+		else if(typ == 6)
+			price = 500;
+		else if(typ == 7)
+			price = 750;
+		else if(typ == 8)
+			price = 1000;
+		else if(typ == 9)
+			price = 1250;
+		else if(typ == 10)
+			price = 2000;
+		else if(typ == 11)
+			price = 5000;
+		else if(typ == 12)
+			price = 10000;
+		else if(typ == 13)
+			price = 50000;
+		return price * level;
 	}
 	
 	public void dropMoney()
@@ -76,6 +104,37 @@ public class TDMob
 		}
 	}
 	
+	public static int getIncomeHeight(int typ,int lvl)
+	{
+		int price = 1;
+		if(typ == 1)
+			price = 1;
+		else if(typ == 2)
+			price = 2;
+		else if(typ == 3)
+			price = 4;
+		else if(typ == 4)
+			price = 8;
+		else if(typ == 5)
+			price = 20;
+		else if(typ == 6)
+			price = 40;
+		else if(typ == 7)
+			price = 60;
+		else if(typ == 8)
+			price = 90;
+		else if(typ == 9)
+			price = 110;
+		else if(typ == 10)
+			price = 150;
+		else if(typ == 11)
+			price = 300;
+		else if(typ == 12)
+			price = 900;
+		else if(typ == 13)
+			price = 1000;
+		return price * lvl;
+	}
 	public static int getHP(int typ,int lvl)
 	{
 		int hp = 10;
@@ -103,6 +162,8 @@ public class TDMob
 			hp = 2000;
 		else if(typ == 12)
 			hp = 10000;
+		else if(typ == 13)
+			hp = 100000;
 		return hp * lvl;
 	}
 	
@@ -156,6 +217,10 @@ public class TDMob
 		{
 			return 12;
 		}
+		else if(oldDur == 64)
+		{
+			return 13;
+		}
 		return 0;
 	}
 	
@@ -185,8 +250,41 @@ public class TDMob
 			return 11;
 		else if(e instanceof IronGolem)
 			return 12;
-		
+		else if(e instanceof Wither)
+			return 13;
 		return 0;
+	}
+	
+	public static EntityType getBukkitType(int typ)
+	{
+		if(typ == 1)
+			return EntityType.CHICKEN;
+		else if(typ == 2)
+			return EntityType.SHEEP;
+		else if(typ == 3)
+			return EntityType.PIG;
+		else if(typ == 4)
+			return EntityType.COW;
+		else if(typ == 5)
+			return EntityType.WOLF;
+		else if(typ == 6)
+			return EntityType.VILLAGER;
+		else if(typ == 7)
+			return EntityType.SKELETON;
+		else if(typ == 8)
+			return EntityType.ZOMBIE;
+		else if(typ == 9)
+			return EntityType.MUSHROOM_COW;
+		else if(typ == 10)
+			return EntityType.CREEPER;
+		else if(typ == 11)
+			return EntityType.WITCH;
+		else if(typ == 12)
+			return EntityType.IRON_GOLEM;
+		else if(typ == 13)
+			return EntityType.WITHER;
+		else
+			return EntityType.CHICKEN;
 	}
 	
 	public float getSpeed()
@@ -196,7 +294,7 @@ public class TDMob
 			spd = spd / 2;
 		else if(this.typ == 5)
 			spd = spd * 2;
-		else if(this.typ == 12)
+		else if(this.typ == 12 || this.typ == 13)
 			spd = spd / 3;
 		
 		if(slowed >= 1)
@@ -231,6 +329,11 @@ public class TDMob
 		else
 			tck = false;
 		
+		//Mushroom HP Regen
+		if(this.typ == 9)
+		{
+			this.hp += 5;
+		}
 		
 		if(this.slowed == 1 && tck == true)
 		{
