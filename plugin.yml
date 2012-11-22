@@ -11,3 +11,6 @@ commands:
     td:
          description: td Befehl
          usage: /td PARAM
+    setmoney:
+         description: setmoney Befehl
+         usage: /setmoney PARAM

@@ -248,28 +248,48 @@ public class TDListener implements Listener
             Location to = this.m.findNextPoint(event.getClickedBlock().getLocation());
 			if(to != null)
 			{
-				EntityType type = TDMob.getBukkitType(TDMob.getType(event.getItem().getDurability()));
-				Location l = event.getClickedBlock().getLocation();
-				l.setY(l.getY()+2);
-				
-				LivingEntity mob = (LivingEntity) event.getPlayer().getWorld().spawnEntity(l, type);
-	            mob.setHealth(1);
-	            
-				TDMob m;
 				int lvl = 1;
 				if(this.m.MaxMobLevelPerPlayer.get(event.getPlayer()) != null)
 					lvl = this.m.MaxMobLevelPerPlayer.get(event.getPlayer());
 				
-				if(this.m.mob.get(mob) == null)
+				
+				int typid = TDMob.getType(event.getItem().getDurability());
+				int money = 0;
+				if(this.m.Money.get(event.getPlayer()) != null)
 				{
-					m = new TDMob(this.m,mob,lvl);
-					m.target = to;
-					this.m.moveMob(mob, to, m.getSpeed());
+					money = this.m.Money.get(event.getPlayer());
+				}
+				int price = TDMob.getPrice(typid, lvl);
+				
+				if(money < price)
+				{
+					event.getPlayer().sendMessage("You don't have enough money to spawn this mob.");
+				} else
+				{
+					EntityType type = TDMob.getBukkitType(typid);
+					Location l = event.getClickedBlock().getLocation();
+					l.setY(l.getY()+2);
+					
+					LivingEntity mob = (LivingEntity) event.getPlayer().getWorld().spawnEntity(l, type);
+		            mob.setHealth(1);
+		            
+					TDMob m;
+					
+					if(this.m.mob.get(mob) == null)
+					{
+						m = new TDMob(this.m,mob,lvl);
+						m.target = to;
+						this.m.moveMob(mob, to, m.getSpeed());
+						
+						int inc = 10;
+						if(this.m.Income.get(event.getPlayer()) != null)
+							inc = this.m.Income.get(event.getPlayer());
+						inc += TDMob.getIncomeHeight(typid, lvl);
+						this.m.Income.put(event.getPlayer(), inc);
+					}
 				}
 			}
 		}
-		
-		//TODO: Spawn Mobs manuell und schmeiss sie in die TDMob
 	}
 	
 	@EventHandler
