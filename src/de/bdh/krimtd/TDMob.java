@@ -74,8 +74,6 @@ public class TDMob
 				paid = price;
 			}
 		}
-		//TODO Droppe Goldbarren/Ignots oder Blöcke je nach Level und Typ
-		
 	}
 	
 	public static int getHP(int typ,int lvl)
@@ -140,8 +138,13 @@ public class TDMob
 	
 	public float getSpeed()
 	{
-		//TODO Speedbestimmung nach Typ
 		float spd = 0.3f;
+		if(this.typ == 3 || this.typ == 8)
+			spd = spd / 2;
+		else if(this.typ == 5)
+			spd = spd * 2;
+		else if(this.typ == 12)
+			spd = spd / 3;
 		
 		if(slowed >= 1)
 		{
@@ -166,14 +169,31 @@ public class TDMob
 		}
 	}
 	
+	boolean tck = false;
 	public void Tick(EffectUtil ef)
 	{
-		if(this.slowed == 1)
+		//Sekundenticker
+		if(tck == false)
+			tck = true;
+		else
+			tck = false;
+		
+		
+		if(this.slowed == 1 && tck == true)
 		{
 			for (Player p: Bukkit.getServer().getOnlinePlayers()) 
 	    	{
 				ef.playPotionEffect(p,(CraftEntity)this.e, 0x0000FF, 200);
 	    	}
+		}
+		
+		if(this.e.getFireTicks() > 0 && this.tck == false)
+		{
+			if(this.fireDamageFrom != null)
+			{
+				this.fireDamageFrom.doDamage(this);
+			} else	
+				this.doDamage(1);
 		}
 	}
 

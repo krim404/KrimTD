@@ -214,13 +214,7 @@ public class TDListener implements Listener
 		{
 			if(this.m.mob.get(event.getEntity()) != null)
 			{
-				event.setCancelled(true);
-				TDMob m = this.m.mob.get(event.getEntity());
-				if(m.fireDamageFrom != null)
-				{
-					m.fireDamageFrom.doDamage(m);
-				} else	
-					m.doDamage(1);
+				event.setDamage(0);
 			}
 		}
     }
