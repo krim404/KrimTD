@@ -2,7 +2,6 @@ package de.bdh.krimtd;
 
 import java.util.List;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -72,7 +71,7 @@ public class TDListener implements Listener
 				event.getPlayer().sendMessage("Cannot build on another tower");
 				event.setCancelled(true);
 			}
-			else if(this.m.closeToPoint(event.getBlock().getLocation(),3))
+			else if(this.m.closeToPoint(event.getBlock().getLocation(),3) && TDTower.getType(event.getBlock().getData()) != 5)
 			{
 				event.getPlayer().sendMessage("Cannot build on the lane");
 				event.setCancelled(true);
