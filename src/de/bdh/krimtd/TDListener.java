@@ -2,6 +2,7 @@ package de.bdh.krimtd;
 
 import java.util.List;
 
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -23,6 +24,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -143,7 +145,7 @@ public class TDListener implements Listener
 	@EventHandler
 	public void onPlayerClick(PlayerInteractEvent event)
 	{
-		if(event.getAction() == Action.LEFT_CLICK_AIR)
+		if(event.getAction() == Action.LEFT_CLICK_AIR && event.getItem().getType() == Material.MONSTER_EGG)
 		{
 			int mxl = this.m.calcMaxMobLevel(event.getPlayer().getLocation());
 			int nl = 0;
@@ -159,6 +161,67 @@ public class TDListener implements Listener
 			
 			this.m.MaxMobLevelPerPlayer.put(event.getPlayer(), nl);
 			event.getPlayer().sendMessage("Now hiring mobs with level: "+nl);
+		} else if(event.getAction() == Action.LEFT_CLICK_BLOCK &&  event.getItem() != null && event.getItem().getType() == Material.MONSTER_EGG)
+		{
+			event.setCancelled(true);
+			short oldDur = event.getItem().getDurability();
+			short newDur = 50;
+			int nl = 0;
+			
+			if(this.m.MaxMobLevelPerPlayer.get(event.getPlayer()) != null)
+			{
+				nl = this.m.MaxMobLevelPerPlayer.get(event.getPlayer());
+			}
+			
+			if(oldDur == 93)
+			{
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Chickens with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+			}
+			else if(oldDur == 91)
+			{
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Sheeps with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+			}
+			else if(oldDur == 90)
+			{
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Pigs with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+			}
+			else if(oldDur == 92)
+			{
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Cows with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+			}
+			else if(oldDur == 95)
+			{
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Wolf with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+			}
+			else if(oldDur == 120)
+			{
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Villager with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+			}
+			else if(oldDur == 51)
+			{
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Skeleton with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+			}
+			else if(oldDur == 54)
+			{
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Zombie with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+			}
+			else if(oldDur == 96)
+			{
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Moshroom with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+			}
+			else if(oldDur == 50)
+			{
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Creeper with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+			}
+			else if(oldDur == 66)
+			{
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Witch with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+			}
+			else if(oldDur == 99)
+			{
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" IronGolem with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+			}
+			event.getPlayer().getItemInHand().setDurability(newDur);
 		}
 		
 		
@@ -176,6 +239,15 @@ public class TDListener implements Listener
 	public void onPlayerQuit(PlayerQuitEvent event)
 	{
 		this.m.MaxMobLevelPerPlayer.remove(event.getPlayer());
+		this.m.Money.remove(event.getPlayer());
+		this.m.Income.remove(event.getPlayer());
+	}
+	
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent event)
+	{
+		this.m.Income.put(event.getPlayer(), 10);
+		this.m.Money.put(event.getPlayer(), 0);
 	}
 	
 	@EventHandler
@@ -262,25 +334,28 @@ public class TDListener implements Listener
 	@EventHandler
 	public void onPlayerPickupItem(PlayerPickupItemEvent event) 
 	{
+		int oldMoney = 0;
+		if(this.m.Money.get(event.getPlayer()) != null)
+			oldMoney = this.m.Money.get(event.getPlayer());
 		if(event.getItem().getItemStack().getType() == Material.GOLD_NUGGET)
 		{
 			event.getItem().remove();
 			event.setCancelled(true);
-			//TODO: Gib spieler Geld
+			this.m.Money.put(event.getPlayer(), (oldMoney+event.getItem().getItemStack().getAmount()));
 		}
 		
-		if(event.getItem().getItemStack().getType() == Material.GOLD_INGOT)
+		else if(event.getItem().getItemStack().getType() == Material.GOLD_INGOT)
 		{
 			event.getItem().remove();
 			event.setCancelled(true);
-			//TODO: Gib spieler Geld
+			this.m.Money.put(event.getPlayer(), (oldMoney+event.getItem().getItemStack().getAmount()*10));
 		}
 		
-		if(event.getItem().getItemStack().getType() == Material.GOLD_BLOCK)
+		else if(event.getItem().getItemStack().getType() == Material.GOLD_BLOCK)
 		{
 			event.getItem().remove();
 			event.setCancelled(true);
-			//TODO: Gib spieler Geld
+			this.m.Money.put(event.getPlayer(), (oldMoney+event.getItem().getItemStack().getAmount()*100));
 		}
 	}
 }

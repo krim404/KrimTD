@@ -106,6 +106,59 @@ public class TDMob
 		return hp * lvl;
 	}
 	
+	public static int getType(Short oldDur)
+	{
+		if(oldDur == 93)
+		{
+			return 1;
+		}
+		else if(oldDur == 91)
+		{
+			return 2;
+		}
+		else if(oldDur == 90)
+		{
+			return 3;
+		}
+		else if(oldDur == 92)
+		{
+			return 4;
+		}
+		else if(oldDur == 95)
+		{
+			return 5;
+		}
+		else if(oldDur == 120)
+		{
+			return 6;
+		}
+		else if(oldDur == 51)
+		{
+			return 7;
+		}
+		else if(oldDur == 54)
+		{
+			return 8;
+		}
+		else if(oldDur == 96)
+		{
+			return 9;
+		}
+		else if(oldDur == 50)
+		{
+			return 10;
+		}
+		else if(oldDur == 66)
+		{
+			return 11;
+		}
+		else if(oldDur == 99)
+		{
+			return 12;
+		}
+		return 0;
+	}
+	
 	public static int getType(LivingEntity e)
 	{
 		if(e instanceof Chicken)

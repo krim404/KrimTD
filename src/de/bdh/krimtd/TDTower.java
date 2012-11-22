@@ -239,7 +239,7 @@ public class TDTower
 	public void doAEDamage(LivingEntity e)
 	{
 		//In Range?
-		if(e.getLocation().distance(this.b.getLocation()) < (2.5 + this.Level * 0.5))
+		if(e.getLocation().distance(this.b.getLocation()) < (5.5 + this.Level * 0.5))
 		{
 			//DAMAGE
 			List<Location> smokeLocations = new ArrayList<Location>();

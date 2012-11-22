@@ -29,7 +29,7 @@ public class Main extends JavaPlugin
 {
 	public Economy econ = null;
 	public TDListener TDListener = null;
-	public boolean debug = true;
+	public boolean debug = false;
 
 	
 	public BlockFace faces[] = 
@@ -98,7 +98,18 @@ public class Main extends JavaPlugin
     
     public void TickIncome()
     {
-    	
+    	int oldMoney = 0;
+    	for (Player p: Bukkit.getServer().getOnlinePlayers()) 
+    	{
+    		oldMoney = 0;
+    		if(this.Money.get(p) != null)
+    			oldMoney = this.Money.get(p);
+    		if(this.Income.get(p) != null)
+    		{
+    			this.Money.put(p,(oldMoney+this.Income.get(p)));
+    			p.sendMessage("You've got your Income: "+oldMoney+this.Income.get(p));
+    		}
+    	}
     }
     
     int tck = 0;
@@ -378,6 +389,9 @@ public class Main extends JavaPlugin
     
     
     HashMap<Player, Integer> MaxMobLevelPerPlayer = new HashMap<Player,Integer>();
+    HashMap<Player, Integer> Money = new HashMap<Player,Integer>();
+    HashMap<Player, Integer> Income = new HashMap<Player,Integer>();
+    
     public int calcMaxMobLevel(Location l)
     {
     	int rad = 5;
@@ -399,6 +413,9 @@ public class Main extends JavaPlugin
                 }
             }
         }
+    	
+    	if(am > 5)
+    		am = 5;
     	
     	if(debug == true)
     		System.out.println("Max Mob Level is: "+am);
