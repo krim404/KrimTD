@@ -2,6 +2,7 @@ package de.bdh.krimtd;
 
 import java.util.List;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -69,6 +70,11 @@ public class TDListener implements Listener
 			else if(event.getBlock().getRelative(BlockFace.DOWN).getType() == Material.WOOL && event.getBlock().getRelative(BlockFace.DOWN).getData() != event.getBlock().getData())
 			{
 				event.getPlayer().sendMessage("Cannot build on another tower");
+				event.setCancelled(true);
+			}
+			else if(this.m.closeToPoint(event.getBlock().getLocation(),3))
+			{
+				event.getPlayer().sendMessage("Cannot build on the lane");
 				event.setCancelled(true);
 			}
 			else if(lvl > 5)

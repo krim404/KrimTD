@@ -251,7 +251,7 @@ public class Main extends JavaPlugin
     	Block temp = null;
     	for(int i$ = (rad * -1); i$ < rad; i$++)
         {
-        	for(int j$ = -4; j$ < 0; j$++)
+        	for(int j$ = -4; j$ < 4; j$++)
             {
         		for(int k$ = (rad * -1); k$ < rad; k$++)
                 {
@@ -267,6 +267,29 @@ public class Main extends JavaPlugin
         }
     	
     	return null;
+    }
+    
+    public boolean closeToPoint(Location l, int rad)
+    {
+    	if(l.getBlock() != null)
+    	{
+	    	Block temp = null;
+	    	for(int i$ = (rad * -1); i$ < rad; i$++)
+	        {
+	        	for(int j$ = (rad * -1); j$ < rad; j$++)
+	            {
+	        		for(int k$ = (rad * -1); k$ < rad; k$++)
+	                {
+	        			temp = l.getBlock().getRelative(i$, j$, k$);
+	        			if(temp != null && temp.getType() == Material.SPONGE)
+	        			{
+	        				return true;
+	        			}
+	                }
+	            }
+	        }
+    	}
+    	return false;
     }
     
     public Location findNextPoint(Location l)
