@@ -166,7 +166,7 @@ public class TDListener implements Listener
 			event.setCancelled(true);
 			short oldDur = event.getItem().getDurability();
 			short newDur = 50;
-			int nl = 0;
+			int nl = 1;
 			
 			if(this.m.MaxMobLevelPerPlayer.get(event.getPlayer()) != null)
 			{
@@ -175,51 +175,63 @@ public class TDListener implements Listener
 			
 			if(oldDur == 93)
 			{
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Chickens with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				newDur = 91;
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Sheeps with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 91)
 			{
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Sheeps with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				newDur = 90;
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Pigs with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 90)
 			{
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Pigs with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				newDur = 92;
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Cows with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 92)
 			{
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Cows with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				newDur = 95;
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Wolf with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 95)
 			{
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Wolf with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				newDur = 120;
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Villager with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 120)
 			{
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Villager with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				newDur = 51;
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Skeleton with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 51)
 			{
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Skeleton with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				newDur = 54;
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Zombie with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 54)
 			{
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Zombie with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				newDur = 96;
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Moshroom with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 96)
 			{
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Moshroom with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				newDur = 50;
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Creeper with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 50)
 			{
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Creeper with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				newDur = 66;
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Witch with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 66)
 			{
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Witch with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				newDur = 99;
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" IronGolem with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 99)
 			{
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" IronGolem with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				newDur = 93;
+				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Chickens with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			event.getPlayer().getItemInHand().setDurability(newDur);
 		}
