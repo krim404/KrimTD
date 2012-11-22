@@ -76,6 +76,13 @@ public class Main extends JavaPlugin
         Commander c = new Commander(this);
         getCommand("td").setExecutor(c); 
         getCommand("setmoney").setExecutor(c);
+        
+        for (Player p: Bukkit.getServer().getOnlinePlayers()) 
+    	{
+        	this.Money.put(p, 0);
+        	this.Income.put(p, 10);
+    	}
+        
     }
     
     public void killMob(LivingEntity e)
@@ -109,7 +116,7 @@ public class Main extends JavaPlugin
     		if(this.Income.get(p) != null)
     		{
     			this.Money.put(p,(oldMoney+this.Income.get(p)));
-    			p.sendMessage("You've got your Income: "+oldMoney+this.Income.get(p));
+    			p.sendMessage("You've got your Income of: "+this.Income.get(p));
     		}
     	}
     }
