@@ -304,6 +304,7 @@ public class TDListener implements Listener
 							inc = this.m.Income.get(event.getPlayer());
 						inc += TDMob.getIncomeHeight(typid, lvl);
 						this.m.Income.put(event.getPlayer(), inc);
+						this.m.Money.put(event.getPlayer(), (money - price));
 					}
 				}
 			}

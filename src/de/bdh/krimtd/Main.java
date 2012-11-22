@@ -75,6 +75,7 @@ public class Main extends JavaPlugin
         
         Commander c = new Commander(this);
         getCommand("td").setExecutor(c); 
+        getCommand("setmoney").setExecutor(c);
     }
     
     public void killMob(LivingEntity e)

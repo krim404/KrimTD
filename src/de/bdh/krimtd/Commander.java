@@ -22,11 +22,8 @@ public class Commander implements CommandExecutor {
 		if(!(sender instanceof Player))
 			return true;
 		
-		if(this.plugin.Money.get((Player)sender) != null)
-		{
-			sender.sendMessage("Your Money: "+this.plugin.Money.get((Player)sender));
-			sender.sendMessage("Your Income: "+this.plugin.Income.get((Player)sender));
-		}
+		sender.sendMessage("Your Money: "+this.plugin.Money.get((Player)sender));
+		sender.sendMessage("Your Income: "+this.plugin.Income.get((Player)sender));
 		
 		if(sender.hasPermission("td.admin") && cmd.getName().equals("setmoney"))
 		{
@@ -34,12 +31,12 @@ public class Commander implements CommandExecutor {
 			int amount = 0;
 			if(args.length == 1)
 			{
-				amount = Integer.parseInt(args[1]);
+				amount = Integer.parseInt(args[0]);
 				plx = (Player)sender;
 			}
-			else
+			else if(args.length == 2)
 			{
-				amount = Integer.parseInt(args[2]);
+				amount = Integer.parseInt(args[1]);
 				plx = Bukkit.getServer().getPlayer(args[0]);
 			}
 			if(plx == null)
