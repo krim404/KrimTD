@@ -30,7 +30,7 @@ public class Main extends JavaPlugin
 {
 	public Economy econ = null;
 	public TDListener TDListener = null;
-	public boolean debug = true;
+	public boolean debug = false;
 
 	
 	public BlockFace faces[] = 
@@ -234,7 +234,7 @@ public class Main extends JavaPlugin
     					} else if(this.ll.get(e).distance(e.getLocation()) < 1)
     					{
     						if(debug == true)
-		    					System.out.println("Mob not moving. Reregister");
+		    					System.out.println(ChatColor.YELLOW+"Mob not moving. Reregister");
     						rego = true;
     					} else
     					{
@@ -272,7 +272,7 @@ public class Main extends JavaPlugin
 			    				} else
 			    				{
 				    				//Goto next Point
-				    				to = this.findNextPoint(e.getLocation());
+				    				to = this.findNextPoint(e.getLocation(),s);
 				    				if(to != null)
 				    				{
 				    					TDMob m;
@@ -296,7 +296,7 @@ public class Main extends JavaPlugin
 				    				else
 				    				{
 				    					if(debug == true)
-				    						System.out.println("Cannot find next Point. Killing");
+				    						System.out.println(ChatColor.RED+"Cannot find next Point. Killing");
 				    					this.killMob(e);
 				    				}
 			    				}
@@ -398,11 +398,11 @@ public class Main extends JavaPlugin
     	return false;
     }
     
-    public Location findNextPoint(Location l)
+    public Location findNextPoint(Location l, Block actualBlock)
     {
-    	int rad = 12;
+    	int rad = 10;
     	int len = 8;
-    	int minlen = 1;
+    	int minlen = 2;
     	double dist = 0, dist2 = 0;
     	Block temp = null;
     	Block b = l.getWorld().getHighestBlockAt(l);
@@ -420,16 +420,28 @@ public class Main extends JavaPlugin
                     	{
 	                    	dist = temp.getWorld().getHighestBlockAt(temp.getLocation()).getLocation().distance(b.getLocation());
 	                    	dist2 = g.getWorld().getHighestBlockAt(g.getLocation()).getLocation().distance(b.getLocation());
-	                    	if(dist < len && dist > minlen && dist2 >= dist)
+	                    	if(dist < len && dist > minlen && dist2 > dist)
 	                    	{
+	                    		boolean brk = false;
 	                    		Location to = temp.getWorld().getHighestBlockAt(temp.getLocation()).getRelative(BlockFace.UP).getLocation();
-	                    		if(debug == true)
+
+	                    		if(actualBlock != null)
 	                    		{
-		                    		System.out.println("Found Next Point:"+to.getX()+","+to.getY()+","+to.getZ());
-	                    			System.out.println("Distanz:"+dist+",Gold:"+dist2);
+		                    		Location old = temp.getWorld().getHighestBlockAt(actualBlock.getLocation()).getRelative(BlockFace.UP).getLocation();
+		                    		if(old.distance(to) < 3)
+		                    			brk = true;
 	                    		}
-	                    		//FOUND
-	                    		return to;
+	                    		
+	                    		if(brk == false)
+	                    		{
+		                    		if(debug == true)
+		                    		{
+			                    		System.out.println("Found Next Point:"+to.getX()+","+to.getY()+","+to.getZ());
+		                    			System.out.println("Distanz:"+dist+",Gold:"+dist2);
+		                    		}
+		                    		//FOUND
+		                    		return to;
+	                    		}
 	                    	}
                     	}
                 	}

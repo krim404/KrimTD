@@ -317,7 +317,7 @@ public class TDListener implements Listener
 		{
 			event.setCancelled(true);
 			//Spawn Mob with Level
-            Location to = this.m.findNextPoint(event.getClickedBlock().getLocation());
+            Location to = this.m.findNextPoint(event.getClickedBlock().getLocation(),null);
 			if(to != null)
 			{
 				int lvl = 1;
@@ -430,6 +430,21 @@ public class TDListener implements Listener
 								float range = t.getAERange();
 								if(e.getLocation().distance(event.getEntity().getLocation()) < range)
 									t.doDamage(this.m.mob.get(e));
+							} else if(event.getEntity() instanceof Arrow) 
+							{ 
+								//ARROW
+								TDTower t = this.m.shots.get(event.getEntity());
+								if(event.getEntity().getFireTicks() > 0)
+								{
+									int tt = t.getFireTicks() * 20;
+									e.setFireTicks(tt);
+									this.m.mob.get(e).fireDamageFrom = t;
+								} else
+									t.doDamage(this.m.mob.get(e));
+								
+								this.m.shots.remove(event.getEntity());
+								event.getEntity().remove();
+								return;
 							}
 						}
 					}
@@ -454,26 +469,7 @@ public class TDListener implements Listener
 	@EventHandler
 	public void onAssault(EntityDamageByEntityEvent event)
     {
-		if(event.getDamager() instanceof Arrow)
-		{
-			if(this.m.shots.get(event.getDamager()) != null)
-			{
-				//Gefeuert von einem Tower (Arrow)
-				event.setCancelled(true);
-				if(this.m.mob.get(event.getEntity()) != null)
-				{
-					TDTower t = this.m.shots.get(event.getDamager());
-					
-					if(event.getDamager().getFireTicks() > 0)
-					{
-						int tt = t.getFireTicks() * 20;
-						event.getEntity().setFireTicks(tt);
-						this.m.mob.get(event.getEntity()).fireDamageFrom = t;
-					} else
-						t.doDamage(this.m.mob.get(event.getEntity()));
-				}
-			}
-		}
+		
     }
 	
 	@EventHandler
