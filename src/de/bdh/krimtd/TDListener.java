@@ -135,6 +135,7 @@ public class TDListener implements Listener
 				++lvl;
 			}
 			
+			
 			if(TDTower.getType(event.getClickedBlock().getData()) == 5 && lvl > 1)
 			{
 				event.setCancelled(true);
@@ -167,6 +168,9 @@ public class TDListener implements Listener
 			}
 			else
 			{
+				if(tmp.getType() != Material.WOOL)
+					tmp = tmp.getRelative(BlockFace.UP);
+				
 				int type = TDTower.getType(event.getItem().getData().getData());
 				int mon = 0;
 				if(this.m.Money.get(event.getPlayer()) != null)
