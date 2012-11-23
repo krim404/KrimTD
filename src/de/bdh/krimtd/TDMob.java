@@ -31,6 +31,7 @@ public class TDMob
 	public int slowed;
 	public int typ;
 	public boolean redo = false;
+	public boolean nodrop = false;
 	Location target;
 	public TDTower fireDamageFrom = null;
 	LivingEntity e;
@@ -81,6 +82,9 @@ public class TDMob
 	
 	public void dropMoney()
 	{
+		if(this.nodrop == true)
+			return;
+		
 		int price = TDMob.getPrice(this.typ, this.level) / 2;
 		int paid = 0;
 		int t = 0;

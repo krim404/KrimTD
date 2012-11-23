@@ -90,6 +90,7 @@ public class TDListener implements Listener
 			//Und nun nutzen wir unseren eigenen Handler
 			if(event.getDamager() instanceof Player)
 			{
+				this.m.mob.get(event.getEntity()).nodrop = true;
 				this.m.mob.get(event.getEntity()).doDamage(event.getDamage());
 			}
 			

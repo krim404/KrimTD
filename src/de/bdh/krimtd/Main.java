@@ -88,8 +88,8 @@ public class Main extends JavaPlugin
     {
         for (Player p: Bukkit.getServer().getOnlinePlayers()) 
     	{
-        	this.Money.put(p, 200);
-        	this.Income.put(p, 30);
+        	this.Money.put(p, 100);
+        	this.Income.put(p, 20);
         	if(msg == true)
         		p.sendMessage(ChatColor.AQUA+"You've got 200$ to start");
     	}
