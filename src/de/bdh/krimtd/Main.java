@@ -77,12 +77,17 @@ public class Main extends JavaPlugin
         getCommand("td").setExecutor(c); 
         getCommand("setmoney").setExecutor(c);
         
+        this.restart();
+        
+    }
+    
+    public void restart()
+    {
         for (Player p: Bukkit.getServer().getOnlinePlayers()) 
     	{
         	this.Money.put(p, 0);
         	this.Income.put(p, 10);
     	}
-        
     }
     
     public void killMob(LivingEntity e)

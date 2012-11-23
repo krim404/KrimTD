@@ -191,9 +191,13 @@ public class TDListener implements Listener
 		{
 			int tp = event.getItem().getData().getData();
 			int ntp = 0;
-			if(tp == 11) //BLUE - EISTOWER
+			
+			if(tp == 0)
 			{
-				
+				ntp = 11;
+			}
+			else if(tp == 11) //BLUE - EISTOWER
+			{
 				ntp = 14;
 			} else if(tp == 14) //ROT - Flammentower
 			{
@@ -212,14 +216,13 @@ public class TDListener implements Listener
 				ntp = 10;
 			} else if(tp == 10) // Purple - HeavyDamage
 			{
-				ntp = 11;
+				ntp = 0;
 			}
 			
 			int type = TDTower.getType(ntp);
 			event.getPlayer().sendMessage("Now building: "+TDTower.name(type)+ " for "+TDTower.getPrice(type, 1));
-			if(ntp == 10)
+			if(ntp == 1)
 				event.getPlayer().sendMessage("You need this Tower to spawn higher level monsters");
-			
 			event.getPlayer().getItemInHand().setDurability((short)ntp);
 		}
 		else if(event.getAction() == Action.LEFT_CLICK_AIR && event.getItem() != null && event.getItem().getType() == Material.MONSTER_EGG)

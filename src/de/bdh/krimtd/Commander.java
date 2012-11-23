@@ -24,8 +24,17 @@ public class Commander implements CommandExecutor {
 		
 		sender.sendMessage("Your Money: "+this.plugin.Money.get((Player)sender));
 		sender.sendMessage("Your Income: "+this.plugin.Income.get((Player)sender));
+		if(sender.hasPermission("td.admin") && args.length == 0 && cmd.getName().equals("td")) 
+		{
+			sender.sendMessage("Write /td reset to start a new round");
+		}
 		
-		if(sender.hasPermission("td.admin") && cmd.getName().equals("setmoney"))
+		else if(sender.hasPermission("td.admin") && args.length == 1 && cmd.getName().equals("td"))
+		{
+			this.plugin.restart();
+			this.plugin.sendall("A new round has started!");
+		}
+		else if(sender.hasPermission("td.admin") && cmd.getName().equals("setmoney"))
 		{
 			Player plx = null;
 			int amount = 0;
