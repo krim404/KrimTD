@@ -45,71 +45,8 @@ public class TDListener implements Listener
 		if(event.getPlayer() == null)
 			return;
 		
-		if(event.getBlock().getType() == Material.WOOL)
-		{
-			int lvl = 1;
-			Block tmp = event.getBlock();
-			while(tmp.getRelative(BlockFace.UP).getData() == event.getBlock().getData() && tmp.getRelative(BlockFace.UP).getType() == event.getBlock().getType())
-			{
-				tmp = tmp.getRelative(BlockFace.UP);
-				++lvl;
-			}
-			tmp = event.getBlock();
-			while(tmp.getRelative(BlockFace.DOWN).getData() == event.getBlock().getData() && tmp.getRelative(BlockFace.DOWN).getType() == event.getBlock().getType())
-			{
-				tmp = tmp.getRelative(BlockFace.DOWN);
-				++lvl;
-			}
-			
-			if(TDTower.getType(event.getBlock().getData()) == 5 && lvl > 1)
-			{
-				event.setCancelled(true);
-				event.getPlayer().sendMessage("BlockTower are Maxxed on Level 1");
-			}
-			else if(this.m.getBlockAround(event.getBlock(), Material.WOOL) != null && TDTower.getType(event.getBlock().getData()) != 5)
-			{
-				event.getPlayer().sendMessage("Cannot build so close to each other");
-				event.setCancelled(true);
-			}
-			else if(event.getBlock().getRelative(BlockFace.DOWN).getType() == Material.WOOL && event.getBlock().getRelative(BlockFace.DOWN).getData() != event.getBlock().getData())
-			{
-				event.getPlayer().sendMessage("Cannot build on another tower");
-				event.setCancelled(true);
-			}
-			else if(this.m.closeToPoint(event.getBlock().getLocation(),3) && TDTower.getType(event.getBlock().getData()) != 5)
-			{
-				event.getPlayer().sendMessage("Cannot build on the lane");
-				event.setCancelled(true);
-			}
-			else if(TDTower.getType(event.getBlock().getData()) == 5 && this.m.isAboveWayPoint(event.getBlock()))
-			{
-				event.getPlayer().sendMessage("Cannot build on a waypoint");
-				event.setCancelled(true);
-			}
-			else if(lvl > 5)
-			{
-				event.getPlayer().sendMessage("Tower is on max level");
-				event.setCancelled(true);
-			}
-			else
-			{
-				int type = TDTower.getType(event.getBlock().getData());
-				int mon = 0;
-				if(this.m.Money.get(event.getPlayer()) != null)
-					mon = this.m.Money.get(event.getPlayer());
-				int price = TDTower.getPrice(type, lvl);
-				if(price > mon)
-				{
-					event.getPlayer().sendMessage("You can't afford to build this tower.");
-					event.setCancelled(true);
-				} else
-				{
-					event.getPlayer().sendMessage(TDTower.name(type)+" Tower is level "+ lvl);
-					this.m.registerTower(tmp, lvl,event.getPlayer());
-					this.m.Money.put(event.getPlayer(),(mon-price));
-				}
-			}
-		} else if(!event.getPlayer().hasPermission("td.admin"))
+		
+		if(!event.getPlayer().hasPermission("td.admin"))
 			event.setCancelled(true);
     }
 	
@@ -165,7 +102,81 @@ public class TDListener implements Listener
 	@EventHandler
 	public void onPlayerClick(PlayerInteractEvent event)
 	{
-		if(event.getAction() == Action.LEFT_CLICK_AIR && event.getItem().getType() == Material.MONSTER_EGG)
+		if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getItem().getType() != Material.WOOL && event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.WOOL)
+		{
+			int type = TDTower.getType(event.getClickedBlock().getData());
+			event.getPlayer().sendMessage(TDTower.name(type)+" Tower Level: ");
+		}
+		else if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getItem().getType() == Material.WOOL && event.getClickedBlock() != null)
+		{
+			int lvl = 1;
+			Block tmp = event.getClickedBlock().getRelative(BlockFace.DOWN);
+			while(tmp.getRelative(BlockFace.UP).getData() == event.getItem().getData().getData() && tmp.getRelative(BlockFace.UP).getType() == event.getItem().getType())
+			{
+				tmp = tmp.getRelative(BlockFace.UP);
+				++lvl;
+			}
+			tmp = event.getClickedBlock();
+			while(tmp.getRelative(BlockFace.DOWN).getData() == event.getItem().getData().getData() && tmp.getRelative(BlockFace.DOWN).getType() == event.getItem().getType())
+			{
+				tmp = tmp.getRelative(BlockFace.DOWN);
+				++lvl;
+			}
+			
+			if(TDTower.getType(event.getClickedBlock().getData()) == 5 && lvl > 1)
+			{
+				event.setCancelled(true);
+				event.getPlayer().sendMessage("BlockTower are Maxxed on Level 1");
+			}
+			else if(this.m.getBlockAround(event.getClickedBlock(), Material.WOOL) != null && TDTower.getType(event.getClickedBlock().getData()) != 5)
+			{
+				event.getPlayer().sendMessage("Cannot build so close to each other");
+				event.setCancelled(true);
+			}
+			else if(event.getClickedBlock().getType() == Material.WOOL && event.getClickedBlock().getData() != event.getItem().getData().getData())
+			{
+				event.getPlayer().sendMessage("Cannot build on another tower");
+				event.setCancelled(true);
+			}
+			else if(this.m.closeToPoint(event.getClickedBlock().getLocation(),3) && TDTower.getType(event.getClickedBlock().getData()) != 5)
+			{
+				event.getPlayer().sendMessage("Cannot build on the lane");
+				event.setCancelled(true);
+			}
+			else if(TDTower.getType(event.getClickedBlock().getData()) == 5 && this.m.isAboveWayPoint(event.getClickedBlock()))
+			{
+				event.getPlayer().sendMessage("Cannot build on a waypoint");
+				event.setCancelled(true);
+			}
+			else if(lvl > 5)
+			{
+				event.getPlayer().sendMessage("Tower is on max level");
+				event.setCancelled(true);
+			}
+			else
+			{
+				int type = TDTower.getType(event.getItem().getData().getData());
+				int mon = 0;
+				if(this.m.Money.get(event.getPlayer()) != null)
+					mon = this.m.Money.get(event.getPlayer());
+				int price = TDTower.getPrice(type, lvl);
+				if(price > mon)
+				{
+					event.getPlayer().sendMessage("You can't afford to build this tower.");
+					event.setCancelled(true);
+				} else
+				{
+					event.getPlayer().sendMessage(TDTower.name(type)+" Tower is level "+ (lvl));
+					this.m.registerTower(tmp, lvl,event.getPlayer());
+					this.m.Money.put(event.getPlayer(),(mon-price));
+					//Place Block
+					Block n = event.getClickedBlock().getWorld().getHighestBlockAt(event.getClickedBlock().getLocation());
+					n.setTypeIdAndData(Material.WOOL.getId(), event.getItem().getData().getData(), false);
+					event.setCancelled(true);
+				}
+			}
+		}
+		else if(event.getAction() == Action.LEFT_CLICK_AIR && event.getItem().getType() == Material.MONSTER_EGG)
 		{
 			int mxl = this.m.calcMaxMobLevel(event.getPlayer().getLocation());
 			int nl = 0;
