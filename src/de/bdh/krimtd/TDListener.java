@@ -3,6 +3,7 @@ package de.bdh.krimtd;
 import java.util.List;
 
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -116,7 +117,7 @@ public class TDListener implements Listener
 		if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getItem() == null && event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.WOOL)
 		{
 			int type = TDTower.getType(event.getClickedBlock().getData());
-			event.getPlayer().sendMessage(TDTower.name(type)+" Tower Level: ");
+			event.getPlayer().sendMessage(ChatColor.AQUA+TDTower.name(type)+" Tower Level: ");
 		}
 		else if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getItem() != null && event.getItem().getType() == Material.WOOL && event.getClickedBlock() != null)
 		{
@@ -137,31 +138,31 @@ public class TDListener implements Listener
 			if(TDTower.getType(event.getClickedBlock().getData()) == 5 && lvl > 1)
 			{
 				event.setCancelled(true);
-				event.getPlayer().sendMessage("BlockTower are Maxxed on Level 1");
+				event.getPlayer().sendMessage(ChatColor.RED+"Block Tower are maxxed on Level 1");
 			}
 			else if(this.m.getBlockAround(event.getClickedBlock(), Material.WOOL) != null && TDTower.getType(event.getItem().getData().getData()) != 5)
 			{
-				event.getPlayer().sendMessage("Cannot build so close to each other");
+				event.getPlayer().sendMessage(ChatColor.RED+"Cannot build so close to each other");
 				event.setCancelled(true);
 			}
 			else if(event.getClickedBlock().getType() == Material.WOOL && event.getClickedBlock().getData() != event.getItem().getData().getData())
 			{
-				event.getPlayer().sendMessage("Cannot build on another tower");
+				event.getPlayer().sendMessage(ChatColor.RED+"Cannot build on another tower");
 				event.setCancelled(true);
 			}
 			else if(this.m.closeToPoint(event.getClickedBlock().getLocation(),3) && TDTower.getType(event.getItem().getData().getData()) != 5)
 			{
-				event.getPlayer().sendMessage("Cannot build on the lane");
+				event.getPlayer().sendMessage(ChatColor.RED+"Cannot build on the lane");
 				event.setCancelled(true);
 			}
 			else if(TDTower.getType(event.getItem().getData().getData()) == 5 && this.m.isAboveWayPoint(event.getClickedBlock().getRelative(BlockFace.UP)))
 			{
-				event.getPlayer().sendMessage("Cannot build on a waypoint");
+				event.getPlayer().sendMessage(ChatColor.RED+"Cannot build on a waypoint");
 				event.setCancelled(true);
 			}
 			else if(lvl > 5)
 			{
-				event.getPlayer().sendMessage("Tower is on max level");
+				event.getPlayer().sendMessage(ChatColor.RED+"Tower is on max level");
 				event.setCancelled(true);
 			}
 			else
@@ -173,7 +174,7 @@ public class TDListener implements Listener
 				int price = TDTower.getPrice(type, lvl);
 				if(price > mon)
 				{
-					event.getPlayer().sendMessage("You can't afford to build this tower.");
+					event.getPlayer().sendMessage(ChatColor.RED+"You can't afford to build this tower.");
 					event.setCancelled(true);
 				} else
 				{
@@ -220,9 +221,9 @@ public class TDListener implements Listener
 			}
 			
 			int type = TDTower.getType(ntp);
-			event.getPlayer().sendMessage("Now building: "+TDTower.name(type)+ " for "+TDTower.getPrice(type, 1));
+			event.getPlayer().sendMessage(ChatColor.AQUA+"Now building: "+TDTower.name(type)+ " for "+TDTower.getPrice(type, 1));
 			if(ntp == 1)
-				event.getPlayer().sendMessage("You need this Tower to spawn higher level monsters");
+				event.getPlayer().sendMessage(ChatColor.AQUA+"You need this Tower to spawn higher level monsters");
 			event.getPlayer().getItemInHand().setDurability((short)ntp);
 		}
 		else if(event.getAction() == Action.LEFT_CLICK_AIR && event.getItem() != null && event.getItem().getType() == Material.MONSTER_EGG)
@@ -240,7 +241,7 @@ public class TDListener implements Listener
 			++nl;
 			
 			this.m.MaxMobLevelPerPlayer.put(event.getPlayer(), nl);
-			event.getPlayer().sendMessage("Now hiring mobs with level: "+nl);
+			event.getPlayer().sendMessage(ChatColor.AQUA+"Now hiring mobs with level: "+nl);
 		} else if(event.getAction() == Action.LEFT_CLICK_BLOCK &&  event.getItem() != null && event.getItem().getType() == Material.MONSTER_EGG)
 		{
 			event.setCancelled(true);
@@ -256,70 +257,70 @@ public class TDListener implements Listener
 			if(oldDur == 93)
 			{
 				newDur = 91;
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Sheeps with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				event.getPlayer().sendMessage(ChatColor.GREEN+"Now Spawning Lvl "+nl+" Sheeps with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 91)
 			{
 				newDur = 90;
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Pigs with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				event.getPlayer().sendMessage(ChatColor.GREEN+"Now Spawning Lvl "+nl+" Pigs with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 90)
 			{
 				newDur = 92;
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Cows with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				event.getPlayer().sendMessage(ChatColor.GREEN+"Now Spawning Lvl "+nl+" Cows with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 92)
 			{
 				newDur = 95;
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Wolf with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				event.getPlayer().sendMessage(ChatColor.GREEN+"Now Spawning Lvl "+nl+" Wolf with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 95)
 			{
 				newDur = 120;
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Villager with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				event.getPlayer().sendMessage(ChatColor.GREEN+"Now Spawning Lvl "+nl+" Villager with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 120)
 			{
 				newDur = 51;
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Skeleton with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				event.getPlayer().sendMessage(ChatColor.GREEN+"Now Spawning Lvl "+nl+" Skeleton with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 51)
 			{
 				newDur = 54;
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Zombie with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				event.getPlayer().sendMessage(ChatColor.GREEN+"Now Spawning Lvl "+nl+" Zombie with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 54)
 			{
 				newDur = 96;
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Moshroom with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				event.getPlayer().sendMessage(ChatColor.GREEN+"Now Spawning Lvl "+nl+" Moshroom with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 96)
 			{
 				newDur = 50;
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Creeper with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				event.getPlayer().sendMessage(ChatColor.GREEN+"Now Spawning Lvl "+nl+" Creeper with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 50)
 			{
 				newDur = 66;
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Witch with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				event.getPlayer().sendMessage(ChatColor.GREEN+"Now Spawning Lvl "+nl+" Witch with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 66)
 			{
 				newDur = 99;
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" IronGolem with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				event.getPlayer().sendMessage(ChatColor.GREEN+"Now Spawning Lvl "+nl+" IronGolem with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 99)
 			{
 				newDur = 64;
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Withers with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				event.getPlayer().sendMessage(ChatColor.GREEN+"Now Spawning Lvl "+nl+" Withers with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			else if(oldDur == 64)
 			{
 				newDur = 93;
-				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Chickens with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
+				event.getPlayer().sendMessage(ChatColor.GREEN+"Now Spawning Lvl "+nl+" Chickens with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			event.getPlayer().getItemInHand().setDurability(newDur);
-			event.getPlayer().sendMessage("Income Increase for each spawned Monster: "+TDMob.getIncomeHeight(TDMob.getType(newDur), nl));
+			event.getPlayer().sendMessage(ChatColor.AQUA+"Income for each spawned Monster: "+TDMob.getIncomeHeight(TDMob.getType(newDur), nl));
 			
 		} else if(event.getAction() == Action.RIGHT_CLICK_BLOCK &&  event.getItem() != null && event.getItem().getType() == Material.MONSTER_EGG)
 		{
@@ -343,7 +344,7 @@ public class TDListener implements Listener
 				
 				if(money < price)
 				{
-					event.getPlayer().sendMessage("You don't have enough money to spawn this mob.");
+					event.getPlayer().sendMessage(ChatColor.RED+"You don't have enough money to spawn this mob.");
 				} else
 				{
 					EntityType type = TDMob.getBukkitType(typid);
@@ -400,6 +401,7 @@ public class TDListener implements Listener
 	{
 		this.m.Income.put(event.getPlayer(), 10);
 		this.m.Money.put(event.getPlayer(), 0);
+		event.getPlayer().sendMessage(ChatColor.GREEN+"Welcome to KrimTD (Tower Defense) - Powered by www.worldofminecraft.de");
 	}
 	
 	@EventHandler

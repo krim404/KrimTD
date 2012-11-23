@@ -8,6 +8,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.minecraft.server.EntityCreature;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -87,6 +88,7 @@ public class Main extends JavaPlugin
     	{
         	this.Money.put(p, 100);
         	this.Income.put(p, 10);
+        	p.sendMessage(ChatColor.AQUA+"You've got 100$ to start");
     	}
     }
     
@@ -121,7 +123,7 @@ public class Main extends JavaPlugin
     		if(this.Income.get(p) != null)
     		{
     			this.Money.put(p,(oldMoney+this.Income.get(p)));
-    			p.sendMessage("You've got your Income of: "+this.Income.get(p));
+    			p.sendMessage(ChatColor.AQUA+"You've got your Income of: "+this.Income.get(p));
     		}
     	}
     }
@@ -194,11 +196,11 @@ public class Main extends JavaPlugin
 			    					String name = this.readSign(sign,1);
 			    					if(count == 0)
 			    					{
-			    						this.sendall("The Team "+name+" has lost the game!");
+			    						this.sendall(ChatColor.RED+"The Team "+name+" has lost the game!");
 			    						//Verloren
 			    					} else if(count > 0)
 			    					{
-			    						this.sendall("The Team "+name+" has "+count+" lives left");
+			    						this.sendall(ChatColor.RED+"The Team "+name+" has "+count+" lives left");
 			    						//Leben abziehen
 			    					}
 			    					this.killMob(e);
@@ -458,7 +460,7 @@ public class Main extends JavaPlugin
     	{
     		int money = this.Tower.get(b).getPrice();
     		money = (int) (money * 0.7);
-    		p.sendMessage("You've got "+money+" for selling the tower");
+    		p.sendMessage(ChatColor.AQUA+"You've got "+money+" for selling the tower");
     		int oldMon = 0;
     		if(this.Money.get(p) != null)
     			oldMon = this.Money.get(p);
