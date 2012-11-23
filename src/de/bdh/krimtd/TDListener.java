@@ -70,24 +70,11 @@ public class TDListener implements Listener
 		
 		if(event.getBlock().getType() == Material.WOOL)
 		{
-			int lvl = 1;
 			Block tmp = event.getBlock();
-			while(tmp.getRelative(BlockFace.UP).getData() == event.getBlock().getData() && tmp.getRelative(BlockFace.UP).getType() == event.getBlock().getType())
+			if(!this.m.removeTower(tmp,true,event.getPlayer()))
 			{
-				tmp = tmp.getRelative(BlockFace.UP);
-				tmp.setType(Material.AIR);
-				++lvl;
+				event.getPlayer().sendMessage(ChatColor.RED+"You're not allowed to destroy a tower you don't own");
 			}
-			tmp = event.getBlock();
-			while(tmp.getRelative(BlockFace.DOWN).getData() == event.getBlock().getData() && tmp.getRelative(BlockFace.DOWN).getType() == event.getBlock().getType())
-			{
-				tmp = tmp.getRelative(BlockFace.DOWN);
-				tmp.setType(Material.AIR);
-				++lvl;
-			}
-			
-			this.m.rePayPlayer(tmp, lvl,event.getPlayer());
-			this.m.unregisterTower(tmp);
 			
 		} else if(!event.getPlayer().hasPermission("td.admin"))
 		{
@@ -192,7 +179,7 @@ public class TDListener implements Listener
 				}
 			}
 		}
-		else if(event.getAction() == Action.LEFT_CLICK_AIR && event.getItem() != null && event.getItem().getType() == Material.WOOL)
+		else if(event.getAction() == Action.LEFT_CLICK_AIR && event.getClickedBlock() == null && event.getItem() != null && event.getItem().getType() == Material.WOOL)
 		{
 			int tp = event.getItem().getData().getData();
 			int ntp = 0;

@@ -3,6 +3,7 @@ package de.bdh.krimtd;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.milkbowl.vault.economy.Economy;
 import net.minecraft.server.EntityCreature;
@@ -44,6 +45,7 @@ public class Main extends JavaPlugin
 
     public void onDisable()
     {
+    	this.restart(false);
         getServer().getScheduler().cancelTasks(this);
         System.out.println((new StringBuilder(String.valueOf(cmdName))).append("by ").append(author).append(" version ").append(version).append(" disabled.").toString());
     }
@@ -78,19 +80,78 @@ public class Main extends JavaPlugin
         getCommand("td").setExecutor(c); 
         getCommand("setmoney").setExecutor(c);
         
-        this.restart();
+        this.restart(true);
         
     }
     
-    public void restart()
+    public void restart(boolean msg)
     {
         for (Player p: Bukkit.getServer().getOnlinePlayers()) 
     	{
         	this.Money.put(p, 100);
         	this.Income.put(p, 10);
-        	p.sendMessage(ChatColor.AQUA+"You've got 100$ to start");
+        	if(msg == true)
+        		p.sendMessage(ChatColor.AQUA+"You've got 100$ to start");
     	}
+        
+        for(Map.Entry<LivingEntity, TDMob> m: this.mob.entrySet())
+    	{
+        	m.getKey().setHealth(0);
+    	}
+        this.mob.clear();
+        this.ll.clear();
+
+        for(Entry<Block, TDTower> t: this.Tower.entrySet())
+    	{
+        	this.removeTower(t.getKey(), false, null);
+    	}
+        
+        this.Tower.clear();
     }
+    
+    
+    public boolean removeTower(Block e,boolean giveMoney,Player by)
+    {
+    	
+    	Block twr = e;
+		while(twr.getRelative(BlockFace.DOWN).getData() == e.getData() && twr.getRelative(BlockFace.DOWN).getType() == e.getType())
+		{
+			twr = twr.getRelative(BlockFace.DOWN);
+		}
+		
+    	if(this.Tower.get(twr) != null)
+		{	
+    		if(by == null || this.Tower.get(twr).owner.getName().equalsIgnoreCase(by.getName()))
+    		{
+		    	int lvl = 0;
+		    	Block tmp = e;
+				while(tmp.getRelative(BlockFace.UP).getData() == e.getData() && tmp.getRelative(BlockFace.UP).getType() == e.getType())
+				{
+					tmp = tmp.getRelative(BlockFace.UP);
+					tmp.setType(Material.AIR);
+					++lvl;
+				}
+				tmp = e;
+				while(tmp.getRelative(BlockFace.DOWN).getData() == e.getData() && tmp.getRelative(BlockFace.DOWN).getType() == e.getType())
+				{
+					tmp = tmp.getRelative(BlockFace.DOWN);
+					tmp.setType(Material.AIR);
+					++lvl;
+				}
+				
+				e.setType(Material.AIR);
+	
+				if(giveMoney == true)
+					this.rePayPlayer(twr, lvl, this.Tower.get(twr).owner);
+				
+				if(by != null)
+					this.unregisterTower(twr);
+				return true;
+    		} 
+		}
+    	return false;
+    }
+    
     
     public void killMob(LivingEntity e)
     {

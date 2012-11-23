@@ -33,7 +33,7 @@ public class Commander implements CommandExecutor {
 		else if(sender.hasPermission("td.admin") && args.length == 1 && cmd.getName().equals("td"))
 		{
 			this.plugin.sendall(ChatColor.RED+"A new round has started!");
-			this.plugin.restart();
+			this.plugin.restart(true);
 		}
 		else if(sender.hasPermission("td.admin") && cmd.getName().equals("setmoney"))
 		{
