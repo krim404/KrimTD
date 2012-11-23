@@ -85,7 +85,7 @@ public class Main extends JavaPlugin
     {
         for (Player p: Bukkit.getServer().getOnlinePlayers()) 
     	{
-        	this.Money.put(p, 0);
+        	this.Money.put(p, 100);
         	this.Income.put(p, 10);
     	}
     }
