@@ -246,7 +246,7 @@ public class Main extends JavaPlugin
 			    			s = getSpongeBelow(e.getLocation(),4);
 			    			if(s != null)
 			    			{
-			    				Block sign = getBlockAround(s,Material.SIGN_POST);
+			    				Block sign = getBlockAround(s,Material.SIGN_POST,false);
 			    				if(sign != null)
 			    				{
 			    					if(debug == true)
@@ -400,8 +400,8 @@ public class Main extends JavaPlugin
     
     public Location findNextPoint(Location l, Block actualBlock)
     {
-    	int rad = 10;
-    	int len = 8;
+    	int rad = 14;
+    	int len = 10;
     	int minlen = 2;
     	double dist = 0, dist2 = 0;
     	Block temp = null;
@@ -570,12 +570,34 @@ public class Main extends JavaPlugin
     	}
     }
     
-    public Block getBlockAround(Block b,Material m)
+    public Block getBlockAround(Block b,Material m, boolean dreid)
     {
     	for (BlockFace f: faces)
     	{
     		if(b.getRelative(f) != null && b.getRelative(f).getType() == m)
     			return b.getRelative(f);
+    	}
+    	
+    	if(dreid == true)
+    	{
+    		Block tmp = b.getRelative(BlockFace.UP);
+    		if(tmp != null && tmp.getType() == m)
+    			return tmp;
+    		
+    		for (BlockFace f: faces)
+        	{
+        		if(tmp.getRelative(f) != null && tmp.getRelative(f).getType() == m)
+        			return tmp.getRelative(f);
+        	}
+    		tmp = b.getRelative(BlockFace.DOWN);
+    		if(tmp != null && tmp.getType() == m)
+    			return tmp;
+    		
+    		for (BlockFace f: faces)
+        	{
+        		if(tmp.getRelative(f) != null && tmp.getRelative(f).getType() == m)
+        			return tmp.getRelative(f);
+        	}
     	}
     	return null;
     	
@@ -583,7 +605,7 @@ public class Main extends JavaPlugin
     
     public Block getGold(Block b)
     {
-    	return getBlockAround(b,Material.GOLD_BLOCK);
+    	return getBlockAround(b,Material.GOLD_BLOCK,false);
     }
     
     public static PluginDescriptionFile pdf;

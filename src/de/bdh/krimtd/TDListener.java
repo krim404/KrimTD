@@ -129,7 +129,7 @@ public class TDListener implements Listener
 				event.setCancelled(true);
 				event.getPlayer().sendMessage(ChatColor.RED+"Block Tower are maxxed on Level 1");
 			}
-			else if(this.m.getBlockAround(event.getClickedBlock(), Material.WOOL) != null && TDTower.getType(event.getItem().getData().getData()) != 5)
+			else if(this.m.getBlockAround(event.getClickedBlock(), Material.WOOL,true) != null && TDTower.getType(event.getItem().getData().getData()) != 5)
 			{
 				event.getPlayer().sendMessage(ChatColor.RED+"Cannot build so close to each other");
 				event.setCancelled(true);
@@ -200,8 +200,8 @@ public class TDListener implements Listener
 				ntp = 8;
 			} else if(tp == 8) // GRAU - Granaten
 			{
-				ntp = 13;
-			} else if(tp == 13) // GRÜN - BlockTower
+				ntp = 1;
+			} else if(tp == 13) // GRÜN - BlockTower - DISABLED
 			{
 				ntp = 1;
 			} else if(tp == 1) // ORANGE - LevelTower
