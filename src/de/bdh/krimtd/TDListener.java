@@ -170,9 +170,10 @@ public class TDListener implements Listener
 					event.setCancelled(true);
 				} else
 				{
-					event.getPlayer().sendMessage(TDTower.name(type)+" Tower is level "+ (lvl));
+					event.getPlayer().sendMessage(ChatColor.AQUA+TDTower.name(type)+" Tower level "+ (lvl));
 					this.m.registerTower(tmp, lvl,event.getPlayer());
 					this.m.Money.put(event.getPlayer(),(mon-price));
+					event.getPlayer().sendMessage(ChatColor.AQUA+"You've paid "+(price));
 					//Place Block
 					Block n = event.getClickedBlock().getWorld().getHighestBlockAt(event.getClickedBlock().getLocation());
 					n.setTypeIdAndData(Material.WOOL.getId(), event.getItem().getData().getData(), false);
@@ -360,6 +361,7 @@ public class TDListener implements Listener
 						inc += TDMob.getIncomeHeight(typid, lvl);
 						this.m.Income.put(event.getPlayer(), inc);
 						this.m.Money.put(event.getPlayer(), (money - price));
+						this.m.mob.put(mob, m);
 					}
 				}
 			}
