@@ -30,6 +30,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class TDListener implements Listener
 {
@@ -48,6 +50,15 @@ public class TDListener implements Listener
 		
 		if(!event.getPlayer().hasPermission("td.admin"))
 			event.setCancelled(true);
+    }
+	
+	@EventHandler
+	public void onRespawn(PlayerRespawnEvent event)
+    {
+		ItemStack egg = new ItemStack(Material.MONSTER_EGG);
+		egg.setDurability((short) 93);
+		event.getPlayer().getInventory().addItem(new ItemStack(Material.WOOL));
+		event.getPlayer().getInventory().addItem(egg);
     }
 	
 	@EventHandler
@@ -102,12 +113,12 @@ public class TDListener implements Listener
 	@EventHandler
 	public void onPlayerClick(PlayerInteractEvent event)
 	{
-		if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getItem().getType() != Material.WOOL && event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.WOOL)
+		if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getItem() == null && event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.WOOL)
 		{
 			int type = TDTower.getType(event.getClickedBlock().getData());
 			event.getPlayer().sendMessage(TDTower.name(type)+" Tower Level: ");
 		}
-		else if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getItem().getType() == Material.WOOL && event.getClickedBlock() != null)
+		else if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getItem() != null && event.getItem().getType() == Material.WOOL && event.getClickedBlock() != null)
 		{
 			int lvl = 1;
 			Block tmp = event.getClickedBlock().getRelative(BlockFace.DOWN);
@@ -128,7 +139,7 @@ public class TDListener implements Listener
 				event.setCancelled(true);
 				event.getPlayer().sendMessage("BlockTower are Maxxed on Level 1");
 			}
-			else if(this.m.getBlockAround(event.getClickedBlock(), Material.WOOL) != null && TDTower.getType(event.getClickedBlock().getData()) != 5)
+			else if(this.m.getBlockAround(event.getClickedBlock(), Material.WOOL) != null && TDTower.getType(event.getItem().getData().getData()) != 5)
 			{
 				event.getPlayer().sendMessage("Cannot build so close to each other");
 				event.setCancelled(true);
@@ -138,12 +149,12 @@ public class TDListener implements Listener
 				event.getPlayer().sendMessage("Cannot build on another tower");
 				event.setCancelled(true);
 			}
-			else if(this.m.closeToPoint(event.getClickedBlock().getLocation(),3) && TDTower.getType(event.getClickedBlock().getData()) != 5)
+			else if(this.m.closeToPoint(event.getClickedBlock().getLocation(),3) && TDTower.getType(event.getItem().getData().getData()) != 5)
 			{
 				event.getPlayer().sendMessage("Cannot build on the lane");
 				event.setCancelled(true);
 			}
-			else if(TDTower.getType(event.getClickedBlock().getData()) == 5 && this.m.isAboveWayPoint(event.getClickedBlock()))
+			else if(TDTower.getType(event.getItem().getData().getData()) == 5 && this.m.isAboveWayPoint(event.getClickedBlock().getRelative(BlockFace.UP)))
 			{
 				event.getPlayer().sendMessage("Cannot build on a waypoint");
 				event.setCancelled(true);
@@ -176,7 +187,42 @@ public class TDListener implements Listener
 				}
 			}
 		}
-		else if(event.getAction() == Action.LEFT_CLICK_AIR && event.getItem().getType() == Material.MONSTER_EGG)
+		else if(event.getAction() == Action.LEFT_CLICK_AIR && event.getItem() != null && event.getItem().getType() == Material.WOOL)
+		{
+			int tp = event.getItem().getData().getData();
+			int ntp = 0;
+			if(tp == 11) //BLUE - EISTOWER
+			{
+				
+				ntp = 14;
+			} else if(tp == 14) //ROT - Flammentower
+			{
+				ntp = 15;
+			} else if(tp == 15) //SCHWARZ - AEDD
+			{
+				ntp = 8;
+			} else if(tp == 8) // GRAU - Granaten
+			{
+				ntp = 13;
+			} else if(tp == 13) // GRÜN - BlockTower
+			{
+				ntp = 1;
+			} else if(tp == 1) // ORANGE - LevelTower
+			{
+				ntp = 10;
+			} else if(tp == 10) // Purple - HeavyDamage
+			{
+				ntp = 11;
+			}
+			
+			int type = TDTower.getType(ntp);
+			event.getPlayer().sendMessage("Now building: "+TDTower.name(type)+ " for "+TDTower.getPrice(type, 1));
+			if(ntp == 10)
+				event.getPlayer().sendMessage("You need this Tower to spawn higher level monsters");
+			
+			event.getPlayer().getItemInHand().setDurability((short)ntp);
+		}
+		else if(event.getAction() == Action.LEFT_CLICK_AIR && event.getItem() != null && event.getItem().getType() == Material.MONSTER_EGG)
 		{
 			int mxl = this.m.calcMaxMobLevel(event.getPlayer().getLocation());
 			int nl = 0;
@@ -270,6 +316,8 @@ public class TDListener implements Listener
 				event.getPlayer().sendMessage("Now Spawning Lvl "+nl+" Chickens with "+TDMob.getHP(TDMob.getType(newDur), nl)+" HP for "+TDMob.getPrice(TDMob.getType(newDur), nl));
 			}
 			event.getPlayer().getItemInHand().setDurability(newDur);
+			event.getPlayer().sendMessage("Income Increase for each spawned Monster: "+TDMob.getIncomeHeight(TDMob.getType(newDur), nl));
+			
 		} else if(event.getAction() == Action.RIGHT_CLICK_BLOCK &&  event.getItem() != null && event.getItem().getType() == Material.MONSTER_EGG)
 		{
 			event.setCancelled(true);

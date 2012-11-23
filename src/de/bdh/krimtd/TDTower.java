@@ -89,7 +89,8 @@ public class TDTower
 			price = 5;
 		} else if(tp == 6) //Level
 		{
-			price = 10;
+			price = 1000;
+			mult = 1;
 		} else if(tp == 7) //HeavyDamage
 		{
 			price = 500;
@@ -141,7 +142,7 @@ public class TDTower
 		} else if(tp == 1) // ORANGE - LevelTower
 		{
 			return 6;
-		} else if(tp == 11) // Purple - HeavyDamage
+		} else if(tp == 10) // Purple - HeavyDamage
 		{
 			return 7;
 		} else //Pfeiltower
