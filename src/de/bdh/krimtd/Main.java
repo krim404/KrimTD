@@ -30,7 +30,7 @@ public class Main extends JavaPlugin
 {
 	public Economy econ = null;
 	public TDListener TDListener = null;
-	public boolean debug = false;
+	public boolean debug = true;
 
 	
 	public BlockFace faces[] = 
@@ -88,10 +88,10 @@ public class Main extends JavaPlugin
     {
         for (Player p: Bukkit.getServer().getOnlinePlayers()) 
     	{
-        	this.Money.put(p, 100);
-        	this.Income.put(p, 10);
+        	this.Money.put(p, 200);
+        	this.Income.put(p, 30);
         	if(msg == true)
-        		p.sendMessage(ChatColor.AQUA+"You've got 100$ to start");
+        		p.sendMessage(ChatColor.AQUA+"You've got 200$ to start");
     	}
         
         for(Map.Entry<LivingEntity, TDMob> m: this.mob.entrySet())
@@ -192,8 +192,8 @@ public class Main extends JavaPlugin
     int tck = 0;
     public void Tick()
     {
-    	//Jede Minute
-    	if(tck >= 120)
+    	//Jede 30 Sek
+    	if(tck >= 60)
     	{
     		this.TickIncome();
     		tck = 0;
@@ -236,9 +236,12 @@ public class Main extends JavaPlugin
     						if(debug == true)
 		    					System.out.println("Mob not moving. Reregister");
     						rego = true;
+    					} else
+    					{
+    						this.ll.put(e, e.getLocation());
     					}
     					
-	    				if(this.mob.get(e) == null || rego == true || (this.mob.get(e) != null && e.getLocation().distance(this.mob.get(e).target) < 2.0))
+	    				if(this.mob.get(e) == null || rego == true || (this.mob.get(e) != null && this.mob.get(e).redo == true) || (this.mob.get(e) != null && e.getLocation().distance(this.mob.get(e).target) < 2.0))
 	    				{
 			    			s = getSpongeBelow(e.getLocation(),4);
 			    			if(s != null)
@@ -287,11 +290,13 @@ public class Main extends JavaPlugin
 				    					
 				    					m.target = to;
 				    					this.moveMob(e, to, m.getSpeed());
+				    					m.redo = false;
 				    				}
 				    				//Keine weiteren vorhanden. Kill
-				    				else if(debug == true)
+				    				else
 				    				{
-				    					System.out.println("Cannot find next Point. Killing");
+				    					if(debug == true)
+				    						System.out.println("Cannot find next Point. Killing");
 				    					this.killMob(e);
 				    				}
 			    				}
@@ -301,7 +306,6 @@ public class Main extends JavaPlugin
 			    				this.killMob(e);
 			    			}
 	    				}
-	    				this.ll.put(e,e.getLocation());
 	    			}
     			}
         	}
@@ -396,7 +400,7 @@ public class Main extends JavaPlugin
     
     public Location findNextPoint(Location l)
     {
-    	int rad = 10;
+    	int rad = 12;
     	int len = 8;
     	int minlen = 1;
     	double dist = 0, dist2 = 0;
@@ -418,7 +422,7 @@ public class Main extends JavaPlugin
 	                    	dist2 = g.getWorld().getHighestBlockAt(g.getLocation()).getLocation().distance(b.getLocation());
 	                    	if(dist < len && dist > minlen && dist2 >= dist)
 	                    	{
-	                    		Location to = temp.getWorld().getHighestBlockAt(temp.getLocation()).getLocation();
+	                    		Location to = temp.getWorld().getHighestBlockAt(temp.getLocation()).getRelative(BlockFace.UP).getLocation();
 	                    		if(debug == true)
 	                    		{
 		                    		System.out.println("Found Next Point:"+to.getX()+","+to.getY()+","+to.getZ());

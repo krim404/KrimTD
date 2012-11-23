@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Cow;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.IronGolem;
@@ -29,6 +30,7 @@ public class TDMob
 	public int hp;
 	public int slowed;
 	public int typ;
+	public boolean redo = false;
 	Location target;
 	public TDTower fireDamageFrom = null;
 	LivingEntity e;
@@ -321,14 +323,27 @@ public class TDMob
 	}
 	
 	boolean tck = false;
+	int t = 0;
 	public void Tick(EffectUtil ef)
 	{
+		if(this.e instanceof Creature)
+		{
+			((Creature)this.e).setTarget(null);
+		}
+		
 		//Sekundenticker
 		if(tck == false)
 			tck = true;
 		else
 			tck = false;
 		
+		if(t > 10)
+		{
+			this.redo = true;
+			t = 0;
+		}
+		else
+			++t;
 		//Mushroom HP Regen
 		if(this.typ == 9)
 		{
