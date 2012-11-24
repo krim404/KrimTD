@@ -20,6 +20,12 @@ public class Commander implements CommandExecutor {
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) 
 	{
+		if((((sender instanceof Player) && sender.hasPermission("td.admin")) || !(sender instanceof Player)) && args.length == 1 && cmd.getName().equals("td"))
+		{
+			this.plugin.sendall(ChatColor.RED+"A new round has started!");
+			this.plugin.restart(true);
+		}
+		
 		if(!(sender instanceof Player))
 			return true;
 		
@@ -28,12 +34,6 @@ public class Commander implements CommandExecutor {
 		if(sender.hasPermission("td.admin") && args.length == 0 && cmd.getName().equals("td")) 
 		{
 			sender.sendMessage(ChatColor.RED+"Write /td reset to start a new round");
-		}
-		
-		else if(sender.hasPermission("td.admin") && args.length == 1 && cmd.getName().equals("td"))
-		{
-			this.plugin.sendall(ChatColor.RED+"A new round has started!");
-			this.plugin.restart(true);
 		}
 		else if(sender.hasPermission("td.admin") && cmd.getName().equals("setmoney"))
 		{
