@@ -74,6 +74,7 @@ public class TDListener implements Listener
 			if(!this.m.removeTower(tmp,true,event.getPlayer()))
 			{
 				event.getPlayer().sendMessage(ChatColor.RED+"You're not allowed to destroy a tower you don't own");
+				event.setCancelled(true);
 			}
 			
 		} else if(!event.getPlayer().hasPermission("td.admin"))
