@@ -169,6 +169,7 @@ public class Main extends JavaPlugin
     }
     
     HashMap<LivingEntity, TDMob> mob = new HashMap<LivingEntity,TDMob>();
+    HashMap<Player, TDTeam> inteam = new HashMap<Player,TDTeam>();
     HashMap<Block, TDTower> Tower = new HashMap<Block,TDTower>();
     HashMap<LivingEntity, Location> ll = new HashMap<LivingEntity,Location>();
     HashMap<Entity, TDTower> shots = new HashMap<Entity,TDTower>();

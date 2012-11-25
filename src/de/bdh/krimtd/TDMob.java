@@ -35,6 +35,8 @@ public class TDMob
 	Location target;
 	public TDTower fireDamageFrom = null;
 	LivingEntity e;
+	public Player p = null;
+	public TDTeam team = null;
 	Main m;
 	
 	public TDMob(Main m, LivingEntity e,int level)
@@ -44,8 +46,6 @@ public class TDMob
 		this.level = level;
 		this.typ = TDMob.getType(e);
 		this.hp = TDMob.getHP(this.typ, level);
-		
-		
 	}
 	
 	public static int getPrice(int typ, int level)
@@ -319,6 +319,9 @@ public class TDMob
 			this.e.playEffect(EntityEffect.DEATH);
 			this.dropMoney();
 			this.m.killMob(e);
+			
+			if(this.team != null)
+				this.team.remMob(this);
 			
 		} else
 		{

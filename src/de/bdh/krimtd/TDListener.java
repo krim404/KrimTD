@@ -361,6 +361,8 @@ public class TDListener implements Listener
 							inc = this.m.Income.get(event.getPlayer());
 						inc += TDMob.getIncomeHeight(typid, lvl);
 						this.m.Income.put(event.getPlayer(), inc);
+						m.p = event.getPlayer();
+						
 						this.m.Money.put(event.getPlayer(), (money - price));
 						this.m.mob.put(mob, m);
 					}
@@ -389,6 +391,9 @@ public class TDListener implements Listener
 		this.m.MaxMobLevelPerPlayer.remove(event.getPlayer());
 		this.m.Money.remove(event.getPlayer());
 		this.m.Income.remove(event.getPlayer());
+		
+		if(this.m.inteam.get(event.getPlayer()) != null)
+			this.m.inteam.get(event.getPlayer()).removePlayer(event.getPlayer());
 	}
 	
 	@EventHandler
