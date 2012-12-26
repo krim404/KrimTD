@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.milkbowl.vault.economy.Economy;
-import net.minecraft.server.EntityCreature;
+import net.minecraft.server.v1_4_6.EntityCreature;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,7 +16,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
-import org.bukkit.craftbukkit.entity.CraftCreature;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftCreature;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;

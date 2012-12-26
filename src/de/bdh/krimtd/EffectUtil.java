@@ -1,12 +1,15 @@
 package de.bdh.krimtd;
 
+
+
+import net.minecraft.server.v1_4_6.DataWatcher;
+import net.minecraft.server.v1_4_6.Packet40EntityMetadata;
+
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.entity.CraftEntity;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import net.minecraft.server.DataWatcher;
-import net.minecraft.server.Packet40EntityMetadata;
 
 public class EffectUtil 
 {
@@ -20,9 +23,8 @@ public class EffectUtil
 	    final DataWatcher dw = new DataWatcher();
 	    dw.a(8, Integer.valueOf(0));
 	    dw.watch(8, Integer.valueOf(color));
-	 
-	    Packet40EntityMetadata packet = new Packet40EntityMetadata(entity.getEntityId(), dw,true);
-	    ((CraftPlayer)player).getHandle().netServerHandler.sendPacket(packet);
+	    Packet40EntityMetadata packet = new net.minecraft.server.v1_4_6.Packet40EntityMetadata(entity.getEntityId(), dw,true);
+	    ((CraftPlayer)player).getHandle().playerConnection.sendPacket(packet);
 	 
 	    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 	        public void run() {
@@ -31,7 +33,7 @@ public class EffectUtil
 		            DataWatcher dwReal = ((CraftEntity)entity).getHandle().getDataWatcher();
 		            dw.watch(8, dwReal.getInt(8));
 		            Packet40EntityMetadata packet = new Packet40EntityMetadata(entity.getEntityId(), dw,true);
-		            ((CraftPlayer)player).getHandle().netServerHandler.sendPacket(packet);
+		            ((CraftPlayer)player).getHandle().playerConnection.sendPacket(packet);
 	        	} catch(Exception e) {}
 	        }
 	    }, duration);
